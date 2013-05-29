@@ -1,0 +1,1 @@
+C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\Trackifly.Server.exe.config
