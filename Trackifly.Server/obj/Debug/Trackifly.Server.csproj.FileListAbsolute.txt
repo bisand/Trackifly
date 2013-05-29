@@ -1,1 +1,9 @@
 C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\Trackifly.Server.exe.config
+C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\Trackifly.Server.exe
+C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\Trackifly.Server.pdb
+C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\Nancy.dll
+C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\Nancy.Hosting.Self.dll
+C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\Topshelf.dll
+C:\Dev\Private\Trackifly\Trackifly.Server\obj\Debug\Trackifly.Server.csprojResolveAssemblyReference.cache
+C:\Dev\Private\Trackifly\Trackifly.Server\obj\Debug\Trackifly.Server.exe
+C:\Dev\Private\Trackifly\Trackifly.Server\obj\Debug\Trackifly.Server.pdb
