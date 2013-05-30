@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Nancy.Hosting.Self;
 using Topshelf;
+using Trackifly.Server.Configuration;
 
 namespace Trackifly.Server
 {
@@ -31,14 +32,13 @@ namespace Trackifly.Server
 
     internal class NancyService
     {
-        private NancyHost _host;
+        private readonly NancyHost _host;
 
         public NancyService()
         {
-            const string uri = "http://localhost:8888";
-            Console.WriteLine(uri);
-            // initialize an instance of NancyHost (found in the Nancy.Hosting.Self package)
-            _host = new NancyHost(new Uri(uri));
+            var port = AppSettings.ServerPort;
+            var uriBuilder = new UriBuilder("http", "localhost", port);
+            _host = new NancyHost(uriBuilder.Uri);
         }
 
         public void Start()

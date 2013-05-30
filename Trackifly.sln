@@ -3,6 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trackifly.Server", "Trackifly.Server\Trackifly.Server.csproj", "{64F7A002-0AE5-4EA1-8D16-54DA1EACFF16}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{12CC3A87-4178-4DE2-B83C-37AEEC1DA0ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trackify.Server.Test.Operations", "Trackify.Server.Test.Operations\Trackify.Server.Test.Operations.csproj", "{B6C717D6-887A-480B-9B81-C872EE00AF12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trackifly.Data", "Trackifly.Data\Trackifly.Data.csproj", "{AE8A5098-31F9-40B5-BB52-270AFEB5EADA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,8 +19,19 @@ Global
 		{64F7A002-0AE5-4EA1-8D16-54DA1EACFF16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64F7A002-0AE5-4EA1-8D16-54DA1EACFF16}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64F7A002-0AE5-4EA1-8D16-54DA1EACFF16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6C717D6-887A-480B-9B81-C872EE00AF12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6C717D6-887A-480B-9B81-C872EE00AF12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6C717D6-887A-480B-9B81-C872EE00AF12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6C717D6-887A-480B-9B81-C872EE00AF12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE8A5098-31F9-40B5-BB52-270AFEB5EADA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE8A5098-31F9-40B5-BB52-270AFEB5EADA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE8A5098-31F9-40B5-BB52-270AFEB5EADA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE8A5098-31F9-40B5-BB52-270AFEB5EADA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B6C717D6-887A-480B-9B81-C872EE00AF12} = {12CC3A87-4178-4DE2-B83C-37AEEC1DA0ED}
 	EndGlobalSection
 EndGlobal

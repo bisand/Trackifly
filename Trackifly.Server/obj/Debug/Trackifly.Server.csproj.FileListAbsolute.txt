@@ -7,3 +7,14 @@ C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\Topshelf.dll
 C:\Dev\Private\Trackifly\Trackifly.Server\obj\Debug\Trackifly.Server.csprojResolveAssemblyReference.cache
 C:\Dev\Private\Trackifly\Trackifly.Server\obj\Debug\Trackifly.Server.exe
 C:\Dev\Private\Trackifly\Trackifly.Server\obj\Debug\Trackifly.Server.pdb
+C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\Content\css\main.css
+C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\Content\js\main.js
+C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\Content\js\plugins.js
+C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\Content\js\vendor\html5-3.6-respond-1.1.0.min.js
+C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\Content\js\vendor\jquery-1.8.3.min.js
+C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\Views\index.html
+C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\Views\master.html
+C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\MongoDB.Bson.dll
+C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\MongoDB.Driver.dll
+C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\MongoDB.Bson.xml
+C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\MongoDB.Driver.xml
