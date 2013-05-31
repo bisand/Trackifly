@@ -4,9 +4,9 @@ using Trackifly.Data.Models.Enums;
 
 namespace Trackifly.Data.Models
 {
-    public class TrackingEntity : TrackingRoot
+    public class TrackingSession : TrackingRoot
     {
-        public TrackingEntity()
+        public TrackingSession()
         {
             TrackingType = TrackingType.Single;
             Positions = new List<TrackingPosition>();

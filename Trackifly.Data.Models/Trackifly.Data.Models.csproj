@@ -42,7 +42,7 @@
     <Compile Include="Enums\TrackingType.cs" />
     <Compile Include="MongoBase.cs" />
     <Compile Include="TrackingPosition.cs" />
-    <Compile Include="TrackingEntity.cs" />
+    <Compile Include="TrackingSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TrackingGroup.cs" />
     <Compile Include="TrackingRoot.cs" />

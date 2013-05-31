@@ -54,6 +54,16 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Trackifly.Data.Models\Trackifly.Data.Models.csproj">
+      <Project>{F8B97334-684B-43D2-AF93-E7BB0EF3FC9D}</Project>
+      <Name>Trackifly.Data.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Trackifly.Data\Trackifly.Data.csproj">
+      <Project>{AE8A5098-31F9-40B5-BB52-270AFEB5EADA}</Project>
+      <Name>Trackifly.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -8,20 +8,20 @@ namespace Trackifly.Data.Models
     {
         public TrackingGroup()
         {
-            TrackingEntities = new List<TrackingEntity>();
+            TrackingEntities = new List<TrackingSession>();
         }
 
-        public List<TrackingEntity> TrackingEntities { get; set; }
+        public List<TrackingSession> TrackingEntities { get; set; }
         public string DisplayName { get; set; }
 
-        public void AddTrackingEntity(TrackingEntity entity)
+        public void AddTrackingEntity(TrackingSession session)
         {
-            TrackingEntities.Add(entity);
+            TrackingEntities.Add(session);
         }
 
         public void AddTrackingEntity(string displayName, TrackingType trackingType, DateTime expires)
         {
-            var entity = new TrackingEntity
+            var entity = new TrackingSession
                 {
                     DisplayName = displayName,
                     TrackingType = trackingType,

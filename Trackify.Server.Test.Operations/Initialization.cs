@@ -8,6 +8,8 @@ using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using MongoDB.Driver.Linq;
 using NUnit.Framework;
+using Trackifly.Data;
+using Trackifly.Data.Models;
 
 namespace Trackify.Server.Test.Operations
 {
@@ -16,7 +18,7 @@ namespace Trackify.Server.Test.Operations
     public class Initialization
     {
         [Test]
-        public void CreateDatabase()
+        public void ProofOfConcept()
         {
             const string connectionString = "mongodb://localhost";
             var client = new MongoClient(connectionString);
@@ -41,7 +43,41 @@ namespace Trackify.Server.Test.Operations
 
             collection.Remove(query);
         }
+
+        [Test]
+        public void TestSaveAndLoad()
+        {
+            const string connectionString = "mongodb://localhost";
+            var client = new MongoClient(connectionString);
+            var server = client.GetServer();
+            var database = server.GetDatabase("test");
+            var dataStore = new MongoDataStore(database);
+
+            var name1 = Guid.NewGuid().ToString();
+            var name2 = Guid.NewGuid().ToString();
+            
+            var user = new User();
+            user.Name = name1;
+            user.Email = "test@test.com";
+            
+            dataStore.Save(user);
+            
+            var loadedUser = dataStore.Query<User>().FirstOrDefault(x => x.Name == name1);
+            Assert.That(loadedUser != null && user.Name.Equals(loadedUser.Name));
+            
+            user.Name = name2;
+            user.Email = "testing@test.com";
+            dataStore.Save(user);
+            
+            loadedUser = dataStore.Query<User>().FirstOrDefault(x => x.Name == name1);
+            Assert.That(loadedUser == null);
+            
+            loadedUser = dataStore.Query<User>().FirstOrDefault(x => x.Name == name2);
+            Assert.That(user.Name.Equals(loadedUser.Name));
+        }
     }
+
+
     public class Entity
     {
         public string Id { get; set; }

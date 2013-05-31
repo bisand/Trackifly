@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using MongoDB.Driver.Builders;
@@ -32,18 +33,17 @@ namespace Trackifly.Data
             return result;
         }
 
+        public T Load<T>(string id) where T : MongoBase
+        {
+            var collection = GetCollection<T>();
+            var entity = collection.AsQueryable<T>().FirstOrDefault(x => x.Id == id);
+            return entity;
+        }
+
         public void Save<T>(T entity)
         {
             var collection = GetCollection<T>();
             collection.Save(entity);
-        }
-
-        public void Update<T>(Expression<Func<T, string>> predicate, T entity) where T : MongoBase
-        {
-            var collection = GetCollection<T>();
-            var query = MongoDB.Driver.Builders.Query<T>.EQ(predicate, entity.Id);
-            var update = MongoDB.Driver.Builders.Update<T>.Set(predicate, "");
-            collection.Update(query, update);
         }
 
         public void Delete<T>(T entity)
