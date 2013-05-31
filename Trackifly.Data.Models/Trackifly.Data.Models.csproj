@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums\TrackingType.cs" />
+    <Compile Include="MongoBase.cs" />
     <Compile Include="TrackingPosition.cs" />
     <Compile Include="TrackingEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

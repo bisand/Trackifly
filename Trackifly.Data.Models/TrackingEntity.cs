@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Trackifly.Data.Models.Enums;
 
@@ -10,8 +9,6 @@ namespace Trackifly.Data.Models
         public TrackingEntity()
         {
             TrackingType = TrackingType.Single;
-            DateCreated = DateTime.Now;
-            Expires = DateTime.MaxValue;
             Positions = new List<TrackingPosition>();
         }
 

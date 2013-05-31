@@ -2,9 +2,14 @@
 
 namespace Trackifly.Data.Models
 {
-    public abstract class TrackingRoot
+    public abstract class TrackingRoot : MongoBase
     {
-        public string Id { get; set; }
+        protected TrackingRoot()
+        {
+            DateCreated = DateTime.Now;
+            Expires = DateTime.MaxValue;
+        }
+
         public DateTime DateCreated { get; set; }
         public DateTime Expires { get; set; }
     }

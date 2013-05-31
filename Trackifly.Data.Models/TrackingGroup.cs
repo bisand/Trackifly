@@ -8,8 +8,6 @@ namespace Trackifly.Data.Models
     {
         public TrackingGroup()
         {
-            DateCreated = DateTime.Now;
-            Expires = DateTime.MaxValue;
             TrackingEntities = new List<TrackingEntity>();
         }
 
