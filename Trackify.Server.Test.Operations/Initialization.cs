@@ -73,7 +73,7 @@ namespace Trackify.Server.Test.Operations
             loadedUser = dataStore.Query<User>().FirstOrDefault(x => x.Name == name2);
             Assert.That(loadedUser != null && user.Name.Equals(loadedUser.Name));
 
-            dataStore.Delete(loadedUser);
+            dataStore.Delete<User>(loadedUser.Id);
 
             loadedUser = dataStore.Query<User>().FirstOrDefault(x => x.Name == name2);
             Assert.That(loadedUser == null);
