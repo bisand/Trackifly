@@ -59,16 +59,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bootstrappers\ContentBootstrapper.cs" />
+    <Compile Include="Bootstrappers\TrackiflyBootstrapper.cs" />
     <Compile Include="Configuration\AppSettings.cs" />
+    <Compile Include="Models\ErrorModel.cs" />
     <Compile Include="Models\RootModel.cs" />
     <Compile Include="Modules\RootModule.cs" />
-    <Compile Include="Modules\TrackModule.cs" />
+    <Compile Include="Modules\TrackingModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -96,6 +99,16 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\images\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Trackifly.Data.Models\Trackifly.Data.Models.csproj">
+      <Project>{F8B97334-684B-43D2-AF93-E7BB0EF3FC9D}</Project>
+      <Name>Trackifly.Data.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Trackifly.Data\Trackifly.Data.csproj">
+      <Project>{AE8A5098-31F9-40B5-BB52-270AFEB5EADA}</Project>
+      <Name>Trackifly.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

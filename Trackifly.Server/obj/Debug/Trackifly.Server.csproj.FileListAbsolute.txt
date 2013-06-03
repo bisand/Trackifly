@@ -38,3 +38,7 @@ D:\Dev\Privat\Projects\Trackifly\Trackifly.Server\bin\Debug\MongoDB.Driver.xml
 D:\Dev\Privat\Projects\Trackifly\Trackifly.Server\obj\Debug\Trackifly.Server.csprojResolveAssemblyReference.cache
 D:\Dev\Privat\Projects\Trackifly\Trackifly.Server\obj\Debug\Trackifly.Server.exe
 D:\Dev\Privat\Projects\Trackifly\Trackifly.Server\obj\Debug\Trackifly.Server.pdb
+C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\Trackifly.Data.Models.dll
+C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\Trackifly.Data.Models.pdb
+C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\Trackifly.Data.dll
+C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\Trackifly.Data.pdb
