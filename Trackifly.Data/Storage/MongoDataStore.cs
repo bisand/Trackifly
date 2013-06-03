@@ -7,7 +7,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using Trackifly.Data.Models;
 
-namespace Trackifly.Data
+namespace Trackifly.Data.Storage
 {
     public class MongoDataStore : IDataStore
     {
@@ -45,7 +45,7 @@ namespace Trackifly.Data
             collection.Save(entity);
         }
 
-        public void Delete<T>(T entity)
+        public void Delete<T>(T entity) where T : MongoBase
         {
             var collection = GetCollection<T>();
             var value = GetPropertyValue("Id", entity);
@@ -58,7 +58,7 @@ namespace Trackifly.Data
             var e = collection.Remove(query);
         }
 
-        public void Delete<T>(string entityId)
+        public void Delete<T>(string id)
         {
             var collection = GetCollection<T>();
 
@@ -66,7 +66,7 @@ namespace Trackifly.Data
             var nameProperty = Expression.Property(argParam, "Id");
             var expression = Expression.Lambda<Func<T, string>>(nameProperty, argParam);
 
-            var query = MongoDB.Driver.Builders.Query<T>.EQ(expression, entityId);
+            var query = MongoDB.Driver.Builders.Query<T>.EQ(expression, id);
             var e = collection.Remove(query);
         }
 

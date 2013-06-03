@@ -47,9 +47,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
-    <Compile Include="IDataStore.cs" />
-    <Compile Include="MongoDataStore.cs" />
+    <Compile Include="TrackingSessions.cs" />
+    <Compile Include="Users.cs" />
+    <Compile Include="Storage\IDataStore.cs" />
+    <Compile Include="Storage\MongoDataStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

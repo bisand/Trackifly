@@ -10,6 +10,8 @@ using MongoDB.Driver.Linq;
 using NUnit.Framework;
 using Trackifly.Data;
 using Trackifly.Data.Models;
+using Trackifly.Data.Models.Enums;
+using Trackifly.Data.Storage;
 
 namespace Trackify.Server.Test.Operations
 {
@@ -77,6 +79,50 @@ namespace Trackify.Server.Test.Operations
 
             loadedUser = dataStore.Query<User>().FirstOrDefault(x => x.Name == name2);
             Assert.That(loadedUser == null);
+        }
+
+        [Test]
+        public void TestTrackiflyUsers()
+        {
+            // Use IOC instead...
+            const string connectionString = "mongodb://localhost";
+            var client = new MongoClient(connectionString);
+            var server = client.GetServer();
+            var database = server.GetDatabase("test");
+            var dataStore = new MongoDataStore(database);
+
+            var users = new Users(dataStore);
+            for (int i = 0; i < 100; i++)
+            {
+                users.Add("andre@biseth.net");
+                users.Add("andre.biseth@paretosec.com");
+                users.Add("andre@biseth.com");
+            }
+        }
+
+        [Test]
+        public void TestTrackingSessions()
+        {
+            // Use IOC instead...
+            const string connectionString = "mongodb://localhost";
+            var client = new MongoClient(connectionString);
+            var server = client.GetServer();
+            var database = server.GetDatabase("test");
+            var dataStore = new MongoDataStore(database);
+
+            var sessions = new TrackingSessions(dataStore);
+            var session1 = sessions.Add();
+            for (int i = 0; i < 100; i++)
+            {
+                session1.AddPosition(new TrackingPosition((decimal) (0.01*i), (decimal) (0.02*i)));
+                sessions.Update(session1);
+            }
+            var session2 = sessions.Add(TrackingType.Full);
+            for (int i = 0; i < 100; i++)
+            {
+                session2.AddPosition(new TrackingPosition((decimal)(0.01 * i), (decimal)(0.02 * i)));
+                sessions.Update(session2);
+            }
         }
     }
 
