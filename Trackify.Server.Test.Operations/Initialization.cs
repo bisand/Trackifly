@@ -45,7 +45,7 @@ namespace Trackify.Server.Test.Operations
         }
 
         [Test]
-        public void TestSaveAndLoad()
+        public void TestSaveLoadDelete()
         {
             const string connectionString = "mongodb://localhost";
             var client = new MongoClient(connectionString);
@@ -56,10 +56,8 @@ namespace Trackify.Server.Test.Operations
             var name1 = Guid.NewGuid().ToString();
             var name2 = Guid.NewGuid().ToString();
             
-            var user = new User();
-            user.Name = name1;
-            user.Email = "test@test.com";
-            
+            var user = new User {Name = name1, Email = "test@test.com"};
+
             dataStore.Save(user);
             
             var loadedUser = dataStore.Query<User>().FirstOrDefault(x => x.Name == name1);
@@ -73,7 +71,12 @@ namespace Trackify.Server.Test.Operations
             Assert.That(loadedUser == null);
             
             loadedUser = dataStore.Query<User>().FirstOrDefault(x => x.Name == name2);
-            Assert.That(user.Name.Equals(loadedUser.Name));
+            Assert.That(loadedUser != null && user.Name.Equals(loadedUser.Name));
+
+            dataStore.Delete(loadedUser);
+
+            loadedUser = dataStore.Query<User>().FirstOrDefault(x => x.Name == name2);
+            Assert.That(loadedUser == null);
         }
     }
 
