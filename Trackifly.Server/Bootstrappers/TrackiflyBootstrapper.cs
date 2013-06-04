@@ -4,6 +4,7 @@ using Nancy.Conventions;
 using Trackifly.Data;
 using Trackifly.Data.Storage;
 using Trackifly.Server.Configuration;
+using Trackifly.Server.Helpers;
 
 namespace Trackifly.Server.Bootstrappers
 {
@@ -13,6 +14,7 @@ namespace Trackifly.Server.Bootstrappers
         private MongoServer _server;
         private MongoDatabase _database;
         private MongoDataStore _dataStore;
+        private ErrorCodes _errorCodes;
 
         protected override void ConfigureConventions(NancyConventions conventions)
         {
@@ -35,6 +37,7 @@ namespace Trackifly.Server.Bootstrappers
             _server = _client.GetServer();
             _database = _server.GetDatabase(AppSettings.DatabaseName);
             _dataStore = new MongoDataStore(_database);
+            _errorCodes = new ErrorCodes();
 
             container.Register(typeof(IDataStore), _dataStore);
 
@@ -45,6 +48,7 @@ namespace Trackifly.Server.Bootstrappers
             container.Register(typeof(IDataStore), _dataStore);
             container.Register(typeof(Users));
             container.Register(typeof(TrackingSessions));
+            container.Register(typeof(ErrorCodes), _errorCodes);
 
             base.ConfigureRequestContainer(container, context);
         }

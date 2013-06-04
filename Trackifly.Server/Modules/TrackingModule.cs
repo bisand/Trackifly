@@ -5,18 +5,19 @@ using Nancy.ModelBinding;
 using Trackifly.Data;
 using Trackifly.Data.Models;
 using Trackifly.Data.Storage;
+using Trackifly.Server.Helpers;
 using Trackifly.Server.Models;
 
 namespace Trackifly.Server.Modules
 {
-    public class TrackingModule : NancyModule
+    public class TrackingModule : BaseModule
     {
-        private static Dictionary<string,DateTime> _createdSessions = new Dictionary<string, DateTime>(); 
-        private readonly IDataStore _dataStore;
+        private static readonly Dictionary<string,DateTime> SessionCache = new Dictionary<string, DateTime>();
+        private readonly TrackingSessions _trackingSessions;
 
-        public TrackingModule(IDataStore dataStore, TrackingSessions trackingSessions)
+        public TrackingModule(IDataStore dataStore, TrackingSessions trackingSessions, ErrorCodes errorCodes) : base(dataStore, errorCodes)
         {
-            _dataStore = dataStore;
+            _trackingSessions = trackingSessions;
             Get["/tracking/"] = parameters =>
                 {
                     var trackingSession = this.Bind<TrackingSession>();
@@ -27,20 +28,20 @@ namespace Trackifly.Server.Modules
                 {
                     var ip = Request.UserHostAddress;
                     DateTime createdDate;
-                    if (_createdSessions.TryGetValue(ip, out createdDate))
+                    if (SessionCache.TryGetValue(ip, out createdDate))
                     {
                         if (createdDate.AddSeconds(10) > DateTime.Now)
                             return Response.AsJson(new ErrorModel
-                            {
-                                Error = 10,
-                                Description = "Too early to create a new session! Try again later."
-                            });
+                                {
+                                    Error = 10,
+                                    Description = ErrorCodes[10]
+                                });
                     }
-                    _createdSessions[ip] = DateTime.Now;
+                    SessionCache[ip] = DateTime.Now;
 
                     var trackingSession = this.Bind<TrackingSession>();
                     
-                    trackingSessions.Add(trackingSession);
+                    _trackingSessions.Add(trackingSession);
 
                     return Response.AsJson(trackingSession);
                 };
