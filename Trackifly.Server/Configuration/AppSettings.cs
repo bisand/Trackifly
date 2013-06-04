@@ -32,5 +32,15 @@ namespace Trackifly.Server.Configuration
                 return value;
             }
         }
+
+        public static int GlobalSaveRetention
+        {
+            get
+            {
+                int result;
+                var value = ConfigurationManager.AppSettings["GlobalSaveRetention"] ?? "10";
+                return int.TryParse(value, out result) ? result : 10;
+            }
+        }
     }
 }

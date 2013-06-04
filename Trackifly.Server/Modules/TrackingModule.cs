@@ -5,6 +5,7 @@ using Nancy.ModelBinding;
 using Trackifly.Data;
 using Trackifly.Data.Models;
 using Trackifly.Data.Storage;
+using Trackifly.Server.Configuration;
 using Trackifly.Server.Helpers;
 using Trackifly.Server.Models;
 
@@ -18,11 +19,20 @@ namespace Trackifly.Server.Modules
         public TrackingModule(IDataStore dataStore, TrackingSessions trackingSessions, ErrorCodes errorCodes) : base(dataStore, errorCodes)
         {
             _trackingSessions = trackingSessions;
-            Get["/tracking/"] = parameters =>
+            Get["/tracking/{sessionid}"] = parameters =>
                 {
-                    var trackingSession = this.Bind<TrackingSession>();
+                    string sessionId = parameters.sessionId;
+                    if(sessionId != null)
+                    {
+                        var trackingSession = _trackingSessions.Get(sessionId);
+                        if(trackingSession == null)
+                            return ErrorResponse(HttpStatusCode.NotFound);
+                        if (trackingSession.Expires >= DateTime.Now)
+                            return ErrorResponse(HttpStatusCode.Forbidden, "Session has expired!");
 
-                    return "OK";
+                        return Response.AsJson(trackingSession);
+                    }
+                    return ErrorResponse(HttpStatusCode.NotFound);
                 };
             Post["/tracking/"] = parameters =>
                 {
@@ -30,12 +40,8 @@ namespace Trackifly.Server.Modules
                     DateTime createdDate;
                     if (SessionCache.TryGetValue(ip, out createdDate))
                     {
-                        if (createdDate.AddSeconds(10) > DateTime.Now)
-                            return Response.AsJson(new ErrorModel
-                                {
-                                    Error = 10,
-                                    Description = ErrorCodes[10]
-                                });
+                        if (createdDate.AddSeconds(AppSettings.GlobalSaveRetention) > DateTime.Now)
+                            return ErrorResponse(HttpStatusCode.TooManyRequests, string.Format("Please wait for at least {0} seconds before you create a new session.", AppSettings.GlobalSaveRetention));
                     }
                     SessionCache[ip] = DateTime.Now;
 
