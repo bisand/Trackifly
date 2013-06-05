@@ -28,7 +28,7 @@ namespace Trackifly.Server.Modules
                     var trackingSession = _trackingSessions.Get(sessionId);
                     if (trackingSession == null)
                         return ErrorResponse(HttpStatusCode.NotFound);
-                    if (trackingSession.Expires >= DateTime.Now)
+                    if (trackingSession.Expires <= DateTime.Now)
                         return ErrorResponse(HttpStatusCode.Forbidden, "Session has expired!");
 
                     return Response.AsJson(trackingSession);
@@ -51,9 +51,14 @@ namespace Trackifly.Server.Modules
                     if (!CheckSaveRetention(SessionCache, out response))
                         return response;
 
-                    var trackingSession = this.Bind<TrackingSession>();
+                    string sessionId = parameters.sessionId;
+                    if (sessionId == null)
+                        return ErrorResponse(HttpStatusCode.NotFound);
 
-                    _trackingSessions.Add(trackingSession);
+                    var trackingSession = this.Bind<TrackingSession>();
+                    trackingSession.Id = sessionId;
+
+                    _trackingSessions.Update(trackingSession);
 
                     return Response.AsJson(trackingSession);
                 };
