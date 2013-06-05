@@ -50,6 +50,5 @@ namespace Trackifly.Server.Modules
                 Description = customErrorMessage ?? ErrorCodes[statusCode]
             }, httpStatusCode);
         }
-
     }
 }

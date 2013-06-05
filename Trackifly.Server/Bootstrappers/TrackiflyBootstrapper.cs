@@ -1,6 +1,7 @@
 ﻿using MongoDB.Driver;
 using Nancy;
 using Nancy.Conventions;
+using Nancy.TinyIoc;
 using Trackifly.Data;
 using Trackifly.Data.Storage;
 using Trackifly.Server.Configuration;
@@ -32,7 +33,7 @@ namespace Trackifly.Server.Bootstrappers
                                                    Nancy.Bootstrapper.IPipelines pipelines)
         {
             _requestRetentionValidator = new RequestRetentionValidator();
-            pipelines.BeforeRequest.AddItemToEndOfPipeline(RetentionValidator);
+            pipelines.BeforeRequest.AddItemToEndOfPipeline(context => RetentionValidator(context, container));
             base.ApplicationStartup(container, pipelines);
         }
 
@@ -66,9 +67,10 @@ namespace Trackifly.Server.Bootstrappers
             base.RequestStartup(container, pipelines, context);
         }
 
-        private static Response RetentionValidator(NancyContext arg)
+        private static Response RetentionValidator(NancyContext context, TinyIoCContainer container)
         {
-            return new RequestRetentionValidator().Validate(arg);
+            var validator = container.Resolve<RequestRetentionValidator>();
+            return validator.Validate(context, container);
         }
     }
 }
