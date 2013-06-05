@@ -1,46 +1,45 @@
 ﻿using System.Configuration;
-using MongoDB.Driver;
 
 namespace Trackifly.Server.Configuration
 {
-    public class AppSettings
+    public static class AppSettings
     {
-        public static int ServerPort
+        static AppSettings()
         {
-            get
-            {
-                int port;
-                var value = ConfigurationManager.AppSettings["ServerPort"] ?? "8888";
-                return int.TryParse(value, out port) ? port : 8888;
-            }
+            LoadConfiguration();
         }
 
-        public static string ConnectionString
-        {
-            get
-            {
-                var value = ConfigurationManager.AppSettings["ConnectionString"] ?? "mongodb://localhost";
-                return value;
-            }
-        }
+        public static int ServerPort { get; private set; }
+        public static string ConnectionString { get; private set; }
+        public static string DatabaseName { get; private set; }
+        public static int GlobalSaveRetention { get; private set; }
+        public static int MaxLoadRequestsPerMinute { get; private set; }
+        public static int MaxSaveRequestsPerMinute { get; private set; }
 
-        public static string DatabaseName
+        public static void LoadConfiguration()
         {
-            get
-            {
-                var value = ConfigurationManager.AppSettings["DatabaseName"] ?? "trackifly";
-                return value;
-            }
-        }
+            int intResult;
+            ConnectionString = ConfigurationManager.AppSettings["ConnectionString"] ?? "mongodb://localhost";
+            DatabaseName = ConfigurationManager.AppSettings["DatabaseName"] ?? "trackifly";
 
-        public static int GlobalSaveRetention
-        {
-            get
-            {
-                int result;
-                var value = ConfigurationManager.AppSettings["GlobalSaveRetention"] ?? "10";
-                return int.TryParse(value, out result) ? result : 10;
-            }
+            ServerPort =
+                int.TryParse(ConfigurationManager.AppSettings["ServerPort"], out intResult)
+                    ? intResult
+                    : 8888;
+            GlobalSaveRetention =
+                int.TryParse(ConfigurationManager.AppSettings["GlobalSaveRetention"], out intResult)
+                    ? intResult
+                    : 10;
+            MaxLoadRequestsPerMinute =
+                int.TryParse(ConfigurationManager.AppSettings["MaxLoadRequestsPerMinute"],
+                             out intResult)
+                    ? intResult
+                    : 60;
+            MaxSaveRequestsPerMinute =
+                int.TryParse(ConfigurationManager.AppSettings["MaxSaveRequestsPerMinute"],
+                             out intResult)
+                    ? intResult
+                    : 10;
         }
     }
 }

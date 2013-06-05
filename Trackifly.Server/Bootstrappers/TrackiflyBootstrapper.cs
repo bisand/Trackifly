@@ -5,16 +5,18 @@ using Trackifly.Data;
 using Trackifly.Data.Storage;
 using Trackifly.Server.Configuration;
 using Trackifly.Server.Helpers;
+using Trackifly.Server.RequestValidators;
 
 namespace Trackifly.Server.Bootstrappers
 {
     public class TrackiflyBootstrapper : DefaultNancyBootstrapper
     {
         private MongoClient _client;
-        private MongoServer _server;
-        private MongoDatabase _database;
         private MongoDataStore _dataStore;
+        private MongoDatabase _database;
         private ErrorCodes _errorCodes;
+        private MongoServer _server;
+        private IRequestValidator _requestRetentionValidator;
 
         protected override void ConfigureConventions(NancyConventions conventions)
         {
@@ -22,11 +24,15 @@ namespace Trackifly.Server.Bootstrappers
 
             conventions.StaticContentsConventions.Add(StaticContentConventionBuilder.AddDirectory("css", @"Content/css"));
             conventions.StaticContentsConventions.Add(StaticContentConventionBuilder.AddDirectory("js", @"Content/js"));
-            conventions.StaticContentsConventions.Add(StaticContentConventionBuilder.AddDirectory("images", @"Content/images"));
+            conventions.StaticContentsConventions.Add(StaticContentConventionBuilder.AddDirectory("images",
+                                                                                                  @"Content/images"));
         }
 
-        protected override void ApplicationStartup(Nancy.TinyIoc.TinyIoCContainer container, Nancy.Bootstrapper.IPipelines pipelines)
+        protected override void ApplicationStartup(Nancy.TinyIoc.TinyIoCContainer container,
+                                                   Nancy.Bootstrapper.IPipelines pipelines)
         {
+            _requestRetentionValidator = new RequestRetentionValidator();
+            pipelines.BeforeRequest.AddItemToEndOfPipeline(RetentionValidator);
             base.ApplicationStartup(container, pipelines);
         }
 
@@ -38,19 +44,31 @@ namespace Trackifly.Server.Bootstrappers
             _database = _server.GetDatabase(AppSettings.DatabaseName);
             _dataStore = new MongoDataStore(_database);
             _errorCodes = new ErrorCodes();
-
+            
             container.Register(typeof(IDataStore), _dataStore);
+            container.Register(typeof(RequestRetentionValidator), _requestRetentionValidator);
 
             base.ConfigureApplicationContainer(container);
         }
+
         protected override void ConfigureRequestContainer(Nancy.TinyIoc.TinyIoCContainer container, NancyContext context)
         {
-            container.Register(typeof(IDataStore), _dataStore);
-            container.Register(typeof(Users));
-            container.Register(typeof(TrackingSessions));
-            container.Register(typeof(ErrorCodes), _errorCodes);
+            container.Register(typeof (IDataStore), _dataStore);
+            container.Register(typeof (Users));
+            container.Register(typeof (TrackingSessions));
+            container.Register(typeof (ErrorCodes), _errorCodes);
 
             base.ConfigureRequestContainer(container, context);
+        }
+
+        protected override void RequestStartup(Nancy.TinyIoc.TinyIoCContainer container, Nancy.Bootstrapper.IPipelines pipelines, NancyContext context)
+        {
+            base.RequestStartup(container, pipelines, context);
+        }
+
+        private static Response RetentionValidator(NancyContext arg)
+        {
+            return new RequestRetentionValidator().Validate(arg);
         }
     }
 }

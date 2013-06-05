@@ -35,17 +35,9 @@ namespace Trackifly.Server.Modules
                 };
             Post["/tracking/"] = parameters =>
                 {
-                    var ip = Request.UserHostAddress;
-                    DateTime createdDate;
-                    if (SessionCache.TryGetValue(ip, out createdDate))
-                    {
-                        if (createdDate.AddSeconds(AppSettings.GlobalSaveRetention) > DateTime.Now)
-                            return ErrorResponse(HttpStatusCode.TooManyRequests,
-                                                 string.Format(
-                                                     "Please wait for at least {0} seconds before you create a new session.",
-                                                     AppSettings.GlobalSaveRetention));
-                    }
-                    SessionCache[ip] = DateTime.Now;
+                    Response response;
+                    if (!CheckSaveRetention(SessionCache, out response))
+                        return response;
 
                     var trackingSession = this.Bind<TrackingSession>();
 
@@ -55,17 +47,9 @@ namespace Trackifly.Server.Modules
                 };
             Put["/tracking/{sessionid}"] = parameters =>
                 {
-                    var ip = Request.UserHostAddress;
-                    DateTime createdDate;
-                    if (SessionCache.TryGetValue(ip, out createdDate))
-                    {
-                        if (createdDate.AddSeconds(AppSettings.GlobalSaveRetention) > DateTime.Now)
-                            return ErrorResponse(HttpStatusCode.TooManyRequests,
-                                                 string.Format(
-                                                     "Please wait for at least {0} seconds before you create a new session.",
-                                                     AppSettings.GlobalSaveRetention));
-                    }
-                    SessionCache[ip] = DateTime.Now;
+                    Response response;
+                    if (!CheckSaveRetention(SessionCache, out response))
+                        return response;
 
                     var trackingSession = this.Bind<TrackingSession>();
 
