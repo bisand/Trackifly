@@ -15,7 +15,7 @@ namespace Trackifly.Server.Modules
 
         public ErrorCodes ErrorCodes { get; set; }
 
-        public BaseModule(IDataStore dataStore, ErrorCodes errorCodes)
+        public BaseModule(string modulePath, IDataStore dataStore, ErrorCodes errorCodes) :base(modulePath)
         {
             ErrorCodes = errorCodes;
             _dataStore = dataStore;

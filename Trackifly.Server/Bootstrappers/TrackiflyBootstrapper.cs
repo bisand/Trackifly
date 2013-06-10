@@ -16,8 +16,8 @@ namespace Trackifly.Server.Bootstrappers
         private MongoDataStore _dataStore;
         private MongoDatabase _database;
         private ErrorCodes _errorCodes;
-        private MongoServer _server;
         private IRequestValidator _requestRetentionValidator;
+        private MongoServer _server;
 
         protected override void ConfigureConventions(NancyConventions conventions)
         {
@@ -45,9 +45,9 @@ namespace Trackifly.Server.Bootstrappers
             _database = _server.GetDatabase(AppSettings.DatabaseName);
             _dataStore = new MongoDataStore(_database);
             _errorCodes = new ErrorCodes();
-            
-            container.Register(typeof(IDataStore), _dataStore);
-            container.Register(typeof(RequestRetentionValidator), _requestRetentionValidator);
+
+            container.Register(typeof (IDataStore), _dataStore);
+            container.Register(typeof (RequestRetentionValidator), _requestRetentionValidator);
 
             base.ConfigureApplicationContainer(container);
         }
@@ -57,12 +57,14 @@ namespace Trackifly.Server.Bootstrappers
             container.Register(typeof (IDataStore), _dataStore);
             container.Register(typeof (Users));
             container.Register(typeof (TrackingSessions));
+            container.Register(typeof (TrackingGroups));
             container.Register(typeof (ErrorCodes), _errorCodes);
 
             base.ConfigureRequestContainer(container, context);
         }
 
-        protected override void RequestStartup(Nancy.TinyIoc.TinyIoCContainer container, Nancy.Bootstrapper.IPipelines pipelines, NancyContext context)
+        protected override void RequestStartup(Nancy.TinyIoc.TinyIoCContainer container,
+                                               Nancy.Bootstrapper.IPipelines pipelines, NancyContext context)
         {
             base.RequestStartup(container, pipelines, context);
         }

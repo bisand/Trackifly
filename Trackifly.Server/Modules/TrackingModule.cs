@@ -16,10 +16,10 @@ namespace Trackifly.Server.Modules
         private readonly TrackingSessions _trackingSessions;
 
         public TrackingModule(IDataStore dataStore, TrackingSessions trackingSessions, ErrorCodes errorCodes)
-            : base(dataStore, errorCodes)
+            : base("/tracking", dataStore, errorCodes)
         {
             _trackingSessions = trackingSessions;
-            Get["/tracking/{sessionid}"] = parameters =>
+            Get["/{sessionid}"] = parameters =>
                 {
                     string sessionId = parameters.sessionId;
                     if (sessionId == null)
@@ -33,7 +33,7 @@ namespace Trackifly.Server.Modules
 
                     return Response.AsJson(trackingSession);
                 };
-            Post["/tracking/"] = parameters =>
+            Post["/"] = parameters =>
                 {
                     Response response;
                     if (!CheckSaveRetention(SessionCache, out response))
@@ -45,7 +45,7 @@ namespace Trackifly.Server.Modules
 
                     return Response.AsJson(trackingSession);
                 };
-            Put["/tracking/{sessionid}"] = parameters =>
+            Put["/{sessionid}"] = parameters =>
                 {
                     Response response;
                     if (!CheckSaveRetention(SessionCache, out response))
@@ -62,7 +62,7 @@ namespace Trackifly.Server.Modules
 
                     return Response.AsJson(trackingSession);
                 };
-            Delete["/tracking/{sessionid}"] = parameters =>
+            Delete["/{sessionid}"] = parameters =>
                 {
                     string sessionId = parameters.sessionId;
                     if (sessionId != null)

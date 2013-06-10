@@ -66,6 +66,7 @@
     <Compile Include="Models\RootModel.cs" />
     <Compile Include="Modules\BaseModule.cs" />
     <Compile Include="Modules\RootModule.cs" />
+    <Compile Include="Modules\TrackingGroupModule.cs" />
     <Compile Include="Modules\TrackingModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
