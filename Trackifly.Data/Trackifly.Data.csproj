@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TrackingGroups.cs" />
     <Compile Include="TrackingSessions.cs" />
     <Compile Include="Users.cs" />
     <Compile Include="Storage\IDataStore.cs" />
