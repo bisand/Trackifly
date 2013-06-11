@@ -10,11 +10,11 @@ using Trackifly.Data.Storage;
 
 namespace Trackifly.Data
 {
-    public class Users
+    public class TrackingUsers
     {
         private readonly IDataStore _dataStore;
 
-        public Users(IDataStore dataStore)
+        public TrackingUsers(IDataStore dataStore)
         {
             _dataStore = dataStore;
         }
@@ -24,9 +24,9 @@ namespace Trackifly.Data
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public User Get(string id)
+        public TrackingUser Get(string id)
         {
-            var user = _dataStore.Load<User>(id);
+            var user = _dataStore.Load<TrackingUser>(id);
             return user;
         }
 
@@ -35,7 +35,7 @@ namespace Trackifly.Data
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public List<User> Query(Func<User, bool> predicate)
+        public List<TrackingUser> Query(Func<TrackingUser, bool> predicate)
         {
             var users = _dataStore.Query(predicate);
             return users;
@@ -47,12 +47,12 @@ namespace Trackifly.Data
         /// <param name="email"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public User Add(string email, string name = null)
+        public TrackingUser Add(string email, string name = null)
         {
             if(string.IsNullOrWhiteSpace(email))
                 throw new ArgumentException("The user must contain at least a valid e-mail address");
 
-            var user = new User(email, name);
+            var user = new TrackingUser(email, name);
             _dataStore.Save(user);
             return user;
         }
@@ -61,7 +61,7 @@ namespace Trackifly.Data
         /// Add a user to the database, providing at least an e-mail address. Name is mandatory.
         /// </summary>
         /// <param name="user"></param>
-        public void Add(User user)
+        public void Add(TrackingUser user)
         {
             if(user == null || string.IsNullOrWhiteSpace(user.Email))
                 throw new ArgumentException("The user must contain at least a valid e-mail address");
@@ -72,7 +72,7 @@ namespace Trackifly.Data
         /// Update the database with the provided user entity.
         /// </summary>
         /// <param name="user"></param>
-        public void Update(User user)
+        public void Update(TrackingUser user)
         {
             _dataStore.Save(user);
         }
@@ -81,7 +81,7 @@ namespace Trackifly.Data
         /// Delete the provided entity from the database.
         /// </summary>
         /// <param name="user"></param>
-        public void Delete(User user)
+        public void Delete(TrackingUser user)
         {
             _dataStore.Delete(user);
         }
@@ -92,7 +92,7 @@ namespace Trackifly.Data
         /// <param name="id"></param>
         public void Delete(string id)
         {
-            _dataStore.Delete<User>(id);
+            _dataStore.Delete<TrackingUser>(id);
         }
     }
 }

@@ -49,7 +49,7 @@
   <ItemGroup>
     <Compile Include="TrackingGroups.cs" />
     <Compile Include="TrackingSessions.cs" />
-    <Compile Include="Users.cs" />
+    <Compile Include="TrackingUsers.cs" />
     <Compile Include="Storage\IDataStore.cs" />
     <Compile Include="Storage\MongoDataStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

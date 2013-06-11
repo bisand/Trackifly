@@ -62,6 +62,7 @@
     <Compile Include="Bootstrappers\TrackiflyBootstrapper.cs" />
     <Compile Include="Configuration\AppSettings.cs" />
     <Compile Include="Helpers\ErrorCodes.cs" />
+    <Compile Include="Handlers\PageNotFoundHandler.cs" />
     <Compile Include="Models\ErrorModel.cs" />
     <Compile Include="Models\RootModel.cs" />
     <Compile Include="Modules\BaseModule.cs" />

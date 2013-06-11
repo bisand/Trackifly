@@ -58,26 +58,26 @@ namespace Trackify.Server.Test.Operations
             var name1 = Guid.NewGuid().ToString();
             var name2 = Guid.NewGuid().ToString();
             
-            var user = new User {Name = name1, Email = "test@test.com"};
+            var user = new TrackingUser {Name = name1, Email = "test@test.com"};
 
             dataStore.Save(user);
             
-            var loadedUser = dataStore.Query<User>().FirstOrDefault(x => x.Name == name1);
+            var loadedUser = dataStore.Query<TrackingUser>().FirstOrDefault(x => x.Name == name1);
             Assert.That(loadedUser != null && user.Name.Equals(loadedUser.Name));
             
             user.Name = name2;
             user.Email = "testing@test.com";
             dataStore.Save(user);
             
-            loadedUser = dataStore.Query<User>().FirstOrDefault(x => x.Name == name1);
+            loadedUser = dataStore.Query<TrackingUser>().FirstOrDefault(x => x.Name == name1);
             Assert.That(loadedUser == null);
             
-            loadedUser = dataStore.Query<User>().FirstOrDefault(x => x.Name == name2);
+            loadedUser = dataStore.Query<TrackingUser>().FirstOrDefault(x => x.Name == name2);
             Assert.That(loadedUser != null && user.Name.Equals(loadedUser.Name));
 
-            dataStore.Delete<User>(loadedUser.Id);
+            dataStore.Delete<TrackingUser>(loadedUser.Id);
 
-            loadedUser = dataStore.Query<User>().FirstOrDefault(x => x.Name == name2);
+            loadedUser = dataStore.Query<TrackingUser>().FirstOrDefault(x => x.Name == name2);
             Assert.That(loadedUser == null);
         }
 
@@ -91,7 +91,7 @@ namespace Trackify.Server.Test.Operations
             var database = server.GetDatabase("test");
             var dataStore = new MongoDataStore(database);
 
-            var users = new Users(dataStore);
+            var users = new TrackingUsers(dataStore);
             for (int i = 0; i < 100; i++)
             {
                 users.Add("andre@biseth.net");

@@ -55,7 +55,7 @@ namespace Trackifly.Server.Bootstrappers
         protected override void ConfigureRequestContainer(Nancy.TinyIoc.TinyIoCContainer container, NancyContext context)
         {
             container.Register(typeof (IDataStore), _dataStore);
-            container.Register(typeof (Users));
+            container.Register(typeof (TrackingUsers));
             container.Register(typeof (TrackingSessions));
             container.Register(typeof (TrackingGroups));
             container.Register(typeof (ErrorCodes), _errorCodes);

@@ -2,14 +2,14 @@
 
 namespace Trackifly.Data.Models
 {
-    public class User : MongoBase
+    public class TrackingUser : MongoBase
     {
-        public User()
+        public TrackingUser()
         {
             DateCreated = DateTime.Now;
         }
 
-        public User(string email, string name)
+        public TrackingUser(string email, string name)
             : this()
         {
             Name = name;

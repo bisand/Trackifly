@@ -12,9 +12,37 @@ namespace Trackifly.Data.Models
             Positions = new List<TrackingPosition>();
         }
 
+        public TrackingSession(string userId)
+        {
+            UserId = userId;
+        }
+
+        public TrackingSession(string userId, TrackingPosition position)
+        {
+            UserId = userId;
+            AddPosition(position);
+        }
+
+        public TrackingSession(string userId, string displayName, TrackingPosition position)
+        {
+            UserId = userId;
+            DisplayName = displayName;
+            AddPosition(position);
+        }
+
+        public TrackingSession(string userId, string displayName, TrackingPosition position,
+                               TrackingType trackingType)
+        {
+            UserId = userId;
+            DisplayName = displayName;
+            TrackingType = trackingType;
+            AddPosition(position);
+        }
+
         public List<TrackingPosition> Positions { get; set; }
         public string DisplayName { get; set; }
         public TrackingType TrackingType { get; set; }
+        public string UserId { get; set; }
 
         public void AddPosition(TrackingPosition position)
         {
