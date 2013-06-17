@@ -8,7 +8,7 @@ namespace Trackifly.Server.Handlers
     {
         public bool HandlesStatusCode(HttpStatusCode statusCode, NancyContext context)
         {
-            return statusCode == HttpStatusCode.NotFound;
+            return statusCode == HttpStatusCode.NotFound && context.Response is NotFoundResponse;
         }
 
         public void Handle(HttpStatusCode statusCode, NancyContext context)
