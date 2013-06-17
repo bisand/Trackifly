@@ -1,11 +1,17 @@
-﻿using MongoDB.Driver;
+﻿using System;
+using System.Linq;
+using MongoDB.Driver;
 using Nancy;
+using Nancy.Authentication.Stateless;
 using Nancy.Conventions;
+using Nancy.Security;
 using Nancy.TinyIoc;
 using Trackifly.Data;
+using Trackifly.Data.Models;
 using Trackifly.Data.Storage;
 using Trackifly.Server.Configuration;
 using Trackifly.Server.Helpers;
+using Trackifly.Server.Models;
 using Trackifly.Server.RequestValidators;
 
 namespace Trackifly.Server.Bootstrappers
@@ -29,9 +35,28 @@ namespace Trackifly.Server.Bootstrappers
                                                                                                   @"Content/images"));
         }
 
-        protected override void ApplicationStartup(Nancy.TinyIoc.TinyIoCContainer container,
-                                                   Nancy.Bootstrapper.IPipelines pipelines)
+        protected override void ApplicationStartup(TinyIoCContainer container, Nancy.Bootstrapper.IPipelines pipelines)
         {
+            var statelessAuthConfiguration =
+                new StatelessAuthenticationConfiguration(ctx =>
+                    {
+                        if (!ctx.Request.Cookies.ContainsKey("AccessToken") || string.IsNullOrWhiteSpace(ctx.Request.Cookies["AccessToken"]))
+                            return null;
+
+                        var accessToken = ctx.Request.Cookies["AccessToken"];
+                        var dataStore = container.Resolve<IDataStore>();
+                        var trackingUser = dataStore.Query<TrackingUser>().FirstOrDefault(x => x.AccessToken.Token == accessToken && x.AccessToken.Expires > DateTime.Now);
+
+                        if (trackingUser == null)
+                            return null;
+
+                        var test = new UserIdentity(trackingUser.Username, trackingUser.Claims);
+
+                        return test;
+                    });
+
+            StatelessAuthentication.Enable(pipelines, statelessAuthConfiguration);
+
             _requestRetentionValidator = new RequestRetentionValidator();
             pipelines.BeforeRequest.AddItemToEndOfPipeline(context => RetentionValidator(context, container));
             base.ApplicationStartup(container, pipelines);

@@ -18,6 +18,14 @@ namespace Trackifly.Server.Modules
         public TrackingModule(IDataStore dataStore, TrackingSessions trackingSessions, ErrorCodes errorCodes)
             : base("/tracking", dataStore, errorCodes)
         {
+            Before += ctx =>
+            {
+                if (Context.CurrentUser == null)
+                    return ErrorResponse(HttpStatusCode.Unauthorized, "Invalid access token! Please login to obtain a new access token.");
+
+                return null;
+            };
+
             _trackingSessions = trackingSessions;
             Get["/{sessionid}"] = parameters =>
                 {

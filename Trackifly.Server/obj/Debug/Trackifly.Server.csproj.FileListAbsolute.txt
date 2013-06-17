@@ -46,3 +46,4 @@ D:\Dev\Privat\Projects\Trackifly\Trackifly.Server\bin\Debug\Trackifly.Data.dll
 D:\Dev\Privat\Projects\Trackifly\Trackifly.Server\bin\Debug\Trackifly.Data.Models.dll
 D:\Dev\Privat\Projects\Trackifly\Trackifly.Server\bin\Debug\Trackifly.Data.Models.pdb
 D:\Dev\Privat\Projects\Trackifly\Trackifly.Server\bin\Debug\Trackifly.Data.pdb
+C:\Dev\Private\Trackifly\Trackifly.Server\bin\Debug\Nancy.Authentication.Stateless.dll

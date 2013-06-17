@@ -13,8 +13,10 @@ namespace Trackifly.Server.Configuration
         public static string ConnectionString { get; private set; }
         public static string DatabaseName { get; private set; }
         public static int GlobalSaveRetention { get; private set; }
+        public static int GlobalLoginRetention { get; private set; }
         public static int MaxLoadRequestsPerMinute { get; private set; }
         public static int MaxSaveRequestsPerMinute { get; private set; }
+
 
         public static void LoadConfiguration()
         {
@@ -30,6 +32,10 @@ namespace Trackifly.Server.Configuration
                 int.TryParse(ConfigurationManager.AppSettings["GlobalSaveRetention"], out intResult)
                     ? intResult
                     : 10;
+            GlobalSaveRetention =
+                int.TryParse(ConfigurationManager.AppSettings["GlobalLoginRetention"], out intResult)
+                    ? intResult
+                    : 2;
             MaxLoadRequestsPerMinute =
                 int.TryParse(ConfigurationManager.AppSettings["MaxLoadRequestsPerMinute"],
                              out intResult)
