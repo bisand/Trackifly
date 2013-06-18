@@ -32,7 +32,7 @@ namespace Trackifly.Server.Modules
 
                     var loginModel = this.Bind<LoginModel>();
 
-                    var trackingUser = _trackingUsers.Query<TrackingUser>().FirstOrDefault(x => x.Username == loginModel.Username);
+                    var trackingUser = _trackingUsers.Query().FirstOrDefault(x => x.Username == loginModel.Username);
                     if (trackingUser == null)
                         return ErrorResponse(HttpStatusCode.Unauthorized, "Wrong username or password!");
 

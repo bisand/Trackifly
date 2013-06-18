@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Trackifly.Data.Models;
 using Trackifly.Data.Models.Enums;
 using Trackifly.Data.Storage;
@@ -34,6 +35,16 @@ namespace Trackifly.Data
         public List<TrackingSession> Query(Func<TrackingSession, bool> predicate)
         {
             var sessions = _dataStore.Query(predicate);
+            return sessions;
+        }
+
+        /// <summary>
+        /// Get an IQueryable of tracking sessions.
+        /// </summary>
+        /// <returns></returns>
+        public IQueryable<TrackingSession> Query()
+        {
+            var sessions = _dataStore.Query<TrackingSession>();
             return sessions;
         }
 

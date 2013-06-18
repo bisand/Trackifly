@@ -42,6 +42,16 @@ namespace Trackifly.Data
         }
 
         /// <summary>
+        /// Get an IQueryable of users.
+        /// </summary>
+        /// <returns></returns>
+        public IQueryable<TrackingUser> Query()
+        {
+            var users = _dataStore.Query<TrackingUser>();
+            return users;
+        }
+
+        /// <summary>
         /// Add a user to the database, providing at least an e-mail address. Name is mandatory.
         /// </summary>
         /// <param name="email"></param>

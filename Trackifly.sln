@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{67AFA4
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trackifly.Server.Tests.Unit", "Trackifly.Server.Tests.Unit\Trackifly.Server.Tests.Unit.csproj", "{A2CDEF6C-9C53-4E4C-BC01-CFF3EBB5CC5A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,11 +42,16 @@ Global
 		{F8B97334-684B-43D2-AF93-E7BB0EF3FC9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8B97334-684B-43D2-AF93-E7BB0EF3FC9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8B97334-684B-43D2-AF93-E7BB0EF3FC9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2CDEF6C-9C53-4E4C-BC01-CFF3EBB5CC5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2CDEF6C-9C53-4E4C-BC01-CFF3EBB5CC5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2CDEF6C-9C53-4E4C-BC01-CFF3EBB5CC5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2CDEF6C-9C53-4E4C-BC01-CFF3EBB5CC5A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{B6C717D6-887A-480B-9B81-C872EE00AF12} = {12CC3A87-4178-4DE2-B83C-37AEEC1DA0ED}
+		{A2CDEF6C-9C53-4E4C-BC01-CFF3EBB5CC5A} = {12CC3A87-4178-4DE2-B83C-37AEEC1DA0ED}
 	EndGlobalSection
 EndGlobal
