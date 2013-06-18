@@ -30,7 +30,7 @@ namespace Trackifly.Server.Modules
         protected bool CheckSaveRetention(Dictionary<string, DateTime> sessionCache, out Response response)
         {
             response = null;
-            var ip = Request.UserHostAddress;
+            var ip = Request.UserHostAddress ?? "unknown";
             DateTime createdDate;
             if (sessionCache.TryGetValue(ip, out createdDate))
             {
@@ -58,8 +58,8 @@ namespace Trackifly.Server.Modules
                 {
                     response = ErrorResponse(HttpStatusCode.TooManyRequests,
                                              string.Format(
-                                                 "Please wait for at least {0} seconds before you create a new session.",
-                                                 AppSettings.GlobalSaveRetention));
+                                                 "Please wait for at least {0} seconds before you try a new login request.",
+                                                 AppSettings.GlobalLoginRetention));
                     return false;
                 }
             }

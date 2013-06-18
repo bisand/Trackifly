@@ -4,18 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{64F7A002-0AE5-4EA1-8D16-54DA1EACFF16}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{8947BBC2-CE78-442E-A62E-8913CE109B5D}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Trackifly.Server</RootNamespace>
-    <AssemblyName>Trackifly.Server</AssemblyName>
+    <RootNamespace>Trackifly.Server.Tests.Integration</RootNamespace>
+    <AssemblyName>Trackifly.Server.Tests.Integration</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -25,7 +24,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -34,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CsQuery">
+      <HintPath>..\packages\CsQuery.1.3.4\lib\net40\CsQuery.dll</HintPath>
+    </Reference>
     <Reference Include="MongoDB.Bson">
       <HintPath>..\packages\mongocsharpdriver.1.8.1\lib\net35\MongoDB.Bson.dll</HintPath>
     </Reference>
@@ -43,85 +44,41 @@
     <Reference Include="Nancy">
       <HintPath>..\packages\Nancy.0.17.1\lib\net40\Nancy.dll</HintPath>
     </Reference>
-    <Reference Include="Nancy.Authentication.Stateless">
-      <HintPath>..\packages\Nancy.Authentication.Stateless.0.17.1\lib\net40\Nancy.Authentication.Stateless.dll</HintPath>
+    <Reference Include="Nancy.Testing">
+      <HintPath>..\packages\Nancy.Testing.0.17.1\lib\net40\Nancy.Testing.dll</HintPath>
     </Reference>
-    <Reference Include="Nancy.Hosting.Self">
-      <HintPath>..\packages\Nancy.Hosting.Self.0.17.1\lib\net40\Nancy.Hosting.Self.dll</HintPath>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Topshelf">
-      <HintPath>..\packages\Topshelf.3.1.1\lib\net40-full\Topshelf.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bootstrappers\TrackiflyBootstrapper.cs" />
-    <Compile Include="Models\LoginModel.cs" />
-    <Compile Include="Models\UserIdentity.cs" />
-    <Compile Include="Configuration\AppSettings.cs" />
-    <Compile Include="Helpers\ErrorCodes.cs" />
-    <Compile Include="Handlers\PageNotFoundHandler.cs" />
-    <Compile Include="Models\ErrorModel.cs" />
-    <Compile Include="Models\RootModel.cs" />
-    <Compile Include="Modules\BaseModule.cs" />
-    <Compile Include="Modules\LoginModule.cs" />
-    <Compile Include="Modules\RootModule.cs" />
-    <Compile Include="Modules\TrackingGroupModule.cs" />
-    <Compile Include="Modules\TrackingModule.cs" />
-    <Compile Include="Models\UserModel.cs" />
-    <Compile Include="Modules\UserModule.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="LoginTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RequestValidators\IRequestValidator.cs" />
-    <Compile Include="RequestValidators\RequestRetentionValidator.cs" />
+    <Compile Include="TestsSetup.cs" />
+    <Compile Include="UserTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\css\main.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\js\main.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\js\plugins.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\js\vendor\html5-3.6-respond-1.1.0.min.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\js\vendor\jquery-1.8.3.min.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Views\index.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Views\master.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Content\images\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Trackifly.Data.Models\Trackifly.Data.Models.csproj">
-      <Project>{F8B97334-684B-43D2-AF93-E7BB0EF3FC9D}</Project>
+      <Project>{f8b97334-684b-43d2-af93-e7bb0ef3fc9d}</Project>
       <Name>Trackifly.Data.Models</Name>
     </ProjectReference>
     <ProjectReference Include="..\Trackifly.Data\Trackifly.Data.csproj">
       <Project>{AE8A5098-31F9-40B5-BB52-270AFEB5EADA}</Project>
       <Name>Trackifly.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Trackifly.Server\Trackifly.Server.csproj">
+      <Project>{64F7A002-0AE5-4EA1-8D16-54DA1EACFF16}</Project>
+      <Name>Trackifly.Server</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
