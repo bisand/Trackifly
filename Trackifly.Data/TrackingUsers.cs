@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Trackifly.Data.Encryption;
 using Trackifly.Data.Models;
 using Trackifly.Data.Storage;
 
@@ -13,10 +14,12 @@ namespace Trackifly.Data
     public class TrackingUsers
     {
         private readonly IDataStore _dataStore;
+        private readonly PasswordManager _passwordManager;
 
-        public TrackingUsers(IDataStore dataStore)
+        public TrackingUsers(IDataStore dataStore, PasswordManager passwordManager)
         {
             _dataStore = dataStore;
+            _passwordManager = passwordManager;
         }
 
         /// <summary>
@@ -54,15 +57,40 @@ namespace Trackifly.Data
         /// <summary>
         /// Add a user to the database, providing at least an e-mail address. Name is mandatory.
         /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <param name="salt"></param>
         /// <param name="email"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public TrackingUser Add(string email, string name = null)
+        public TrackingUser Add(string username, byte[] password, byte[] salt, string email = null, string name = null)
         {
-            if(string.IsNullOrWhiteSpace(email))
-                throw new ArgumentException("The user must contain at least a valid e-mail address");
+            if (string.IsNullOrWhiteSpace(username))
+                throw new ArgumentException("The user must contain at least a username, password and salt.");
 
-            var user = new TrackingUser(email, name);
+            var user = new TrackingUser(username, password, salt)
+            {
+                Email = email,
+                Name = name,
+            };
+            _dataStore.Save(user);
+            return user;
+        }
+
+
+        public TrackingUser Add(string username, string password, string email = null, string name = null)
+        {
+            if (string.IsNullOrWhiteSpace(username))
+                throw new ArgumentException("The user must contain at least a username, password and salt.");
+
+            var salt = Encoding.UTF8.GetBytes(Guid.NewGuid().ToString());
+            var hashPassword = _passwordManager.HashPassword(password, salt);
+
+            var user = new TrackingUser(username, hashPassword, salt)
+            {
+                Email = email,
+                Name = name,
+            };
             _dataStore.Save(user);
             return user;
         }

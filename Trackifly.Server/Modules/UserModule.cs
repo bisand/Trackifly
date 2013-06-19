@@ -37,16 +37,10 @@ namespace Trackifly.Server.Modules
 
                     var salt = Encoding.UTF8.GetBytes(Guid.NewGuid().ToString());
                     var hashPassword = _passwordManager.HashPassword(model.Password, salt);
-                    var user = new TrackingUser
+                    var user = new TrackingUser(model.Username, hashPassword, salt)
                         {
-                            Id = Guid.NewGuid().ToString(),
-                            Username = model.Username,
-                            Password = hashPassword,
-                            Salt = salt,
                             Name = model.Name,
                             Email = model.Email,
-                            AccessToken = new AccessToken{Token = Guid.NewGuid().ToString()},
-                            Active = true,
                         };
 
                     _trackingUsers.Add(user);
@@ -54,8 +48,16 @@ namespace Trackifly.Server.Modules
                     return Response.AsJson(user, HttpStatusCode.Created);
                 };
 
-            Delete["/"] = parameters =>
+            Delete["/{accessToken}/{id}"] = parameters =>
                 {
+                    string id = parameters.Id;
+                    string accessToken = parameters.AccessToken;
+
+                    var user = _trackingUsers.Get(id);
+                    if (user == null)
+                        return HttpStatusCode.NotFound;
+
+                    _trackingUsers.Delete(id);
                     return HttpStatusCode.OK;
                 };
         }

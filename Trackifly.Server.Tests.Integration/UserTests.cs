@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using Nancy;
 using Nancy.Testing;
+using Trackifly.Data.Models;
 using Trackifly.Server.Models;
 using Trackifly.Server.Modules;
 
@@ -18,11 +19,13 @@ namespace Trackifly.Server.Tests.Integration
                 with.Dependencies(_dependencies);
             });
 
-            var model = new UserModel();
-            model.Username = "test";
-            model.Password = "test";
-            model.Name = "Test Testesen";
-            model.Email = "test@test.net";
+            var model = new UserModel
+                {
+                    Username = "test123",
+                    Password = "test123",
+                    Name = "Test Testesen",
+                    Email = "test@test.net"
+                };
 
             var response = browser.Post("/user", with =>
             {
@@ -31,6 +34,18 @@ namespace Trackifly.Server.Tests.Integration
             });
 
             Assert.That(response.StatusCode == HttpStatusCode.Created);
+
+            var user = response.Body.DeserializeJson<TrackingUser>();
+            Assert.IsNotNull(user);
+            Assert.AreEqual(user.Username, model.Username);
+            Assert.AreEqual(user.Email, model.Email);
+            Assert.AreEqual(user.Name, model.Name);
+            Assert.NotNull(user.Password);
+            Assert.NotNull(user.Salt);
+
+            response = browser.Delete(string.Format("/user/{0}", user.Id), with => with.HttpRequest());
+
+            Assert.That(response.StatusCode == HttpStatusCode.OK);
         }
     }
 }

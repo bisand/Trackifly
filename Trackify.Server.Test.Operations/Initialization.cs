@@ -9,6 +9,7 @@ using MongoDB.Driver.Builders;
 using MongoDB.Driver.Linq;
 using NUnit.Framework;
 using Trackifly.Data;
+using Trackifly.Data.Encryption;
 using Trackifly.Data.Models;
 using Trackifly.Data.Models.Enums;
 using Trackifly.Data.Storage;
@@ -90,13 +91,13 @@ namespace Trackify.Server.Test.Operations
             var server = client.GetServer();
             var database = server.GetDatabase("test");
             var dataStore = new MongoDataStore(database);
-
-            var users = new TrackingUsers(dataStore);
+            var j = 1;
+            var users = new TrackingUsers(dataStore, new PasswordManager());
             for (int i = 0; i < 100; i++)
             {
-                users.Add("andre@biseth.net");
-                users.Add("andre.biseth@paretosec.com");
-                users.Add("andre@biseth.com");
+                users.Add(string.Format("test{0}", j++), "test", "andre@biseth.net");
+                users.Add(string.Format("test{0}", j++), "test", "andre.biseth@paretosec.com");
+                users.Add(string.Format("test{0}", j++), "test", "andre@biseth.com");
             }
         }
 

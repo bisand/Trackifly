@@ -8,13 +8,16 @@ namespace Trackifly.Data.Models
         public TrackingUser()
         {
             DateCreated = DateTime.Now;
+            Active = true;
+            AccessToken = new AccessToken(Guid.NewGuid().ToString());
         }
 
-        public TrackingUser(string email, string name)
+        public TrackingUser(string username, byte[] password, byte[] passwordSalt)
             : this()
         {
-            Name = name;
-            Email = email;
+            Username = username;
+            Password = password;
+            Salt = passwordSalt;
         }
 
         public string Name { get; set; }
