@@ -43,7 +43,7 @@ namespace Trackifly.Server.Tests.Integration
             Assert.NotNull(user.Password);
             Assert.NotNull(user.Salt);
 
-            response = browser.Delete(string.Format("/user/{0}", user.Id), with => with.HttpRequest());
+            response = browser.Delete(string.Format("/user/{0}/{1}", user.AccessToken.Token, user.Id), with => with.HttpRequest());
 
             Assert.That(response.StatusCode == HttpStatusCode.OK);
         }

@@ -19,7 +19,7 @@ namespace Trackifly.Server.Modules
         private readonly PasswordManager _passwordManager;
 
         public LoginModule(IDataStore dataStore, TrackingUsers trackingUsers, ErrorCodes errorCodes, PasswordManager passwordManager)
-            : base("/login", dataStore, errorCodes)
+            : base("/login", dataStore, trackingUsers, errorCodes)
         {
             _trackingUsers = trackingUsers;
             _passwordManager = passwordManager;

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Nancy;
+using Nancy.TinyIoc;
+using Trackifly.Data;
 using Trackifly.Data.Storage;
 using Trackifly.Server.Configuration;
 using Trackifly.Server.Helpers;
@@ -11,6 +14,7 @@ namespace Trackifly.Server.Modules
     public class BaseModule : NancyModule
     {
         private readonly IDataStore _dataStore;
+        private readonly TrackingUsers _trackingUsers;
 
         public BaseModule(IDataStore dataStore, ErrorCodes errorCodes)
         {
@@ -18,11 +22,12 @@ namespace Trackifly.Server.Modules
             _dataStore = dataStore;
         }
 
-        public BaseModule(string modulePath, IDataStore dataStore, ErrorCodes errorCodes)
+        public BaseModule(string modulePath, IDataStore dataStore, TrackingUsers trackingUsers, ErrorCodes errorCodes)
             : base(modulePath)
         {
             ErrorCodes = errorCodes;
             _dataStore = dataStore;
+            _trackingUsers = trackingUsers;
         }
 
         public ErrorCodes ErrorCodes { get; set; }
@@ -65,6 +70,16 @@ namespace Trackifly.Server.Modules
             }
             sessionCache[ip] = DateTime.Now;
             return true;
+        }
+
+        protected bool IsAccessTokenValid(string accessToken)
+        {
+            var users =
+                _trackingUsers.Query(
+                    x =>
+                    x.AccessToken != null && x.AccessToken.Token == accessToken && x.AccessToken.Expires > DateTime.Now)
+                              .FirstOrDefault();
+            return users != null;
         }
 
         protected Response ErrorResponse(HttpStatusCode httpStatusCode, string customErrorMessage = null)

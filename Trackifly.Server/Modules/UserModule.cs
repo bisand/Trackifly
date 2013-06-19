@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Nancy;
 using Nancy.ModelBinding;
+using Nancy.Security;
 using Trackifly.Data;
 using Trackifly.Data.Encryption;
 using Trackifly.Data.Models;
@@ -19,7 +21,7 @@ namespace Trackifly.Server.Modules
 
         public UserModule(IDataStore dataStore, TrackingUsers trackingUsers, ErrorCodes errorCodes,
                           PasswordManager passwordManager)
-            : base("/user", dataStore, errorCodes)
+            : base("/user", dataStore, trackingUsers, errorCodes)
         {
             _trackingUsers = trackingUsers;
             _passwordManager = passwordManager;
@@ -53,7 +55,11 @@ namespace Trackifly.Server.Modules
                     string id = parameters.Id;
                     string accessToken = parameters.AccessToken;
 
+                    this.RequiresClaims(new[] { "Admin" });
+
                     var user = _trackingUsers.Get(id);
+                    if (user != null && user.AccessToken != null && user.AccessToken.Token != accessToken)
+                        return HttpStatusCode.Unauthorized;
                     if (user == null)
                         return HttpStatusCode.NotFound;
 

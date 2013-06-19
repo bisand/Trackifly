@@ -13,8 +13,8 @@ namespace Trackifly.Server.Modules
         private static readonly Dictionary<string, DateTime> SessionCache = new Dictionary<string, DateTime>();
         private readonly TrackingGroups _trackingGroups;
 
-        public TrackingGroupModule(IDataStore dataStore, TrackingGroups trackingGroups, ErrorCodes errorCodes)
-            : base("/tracking/group", dataStore, errorCodes)
+        public TrackingGroupModule(IDataStore dataStore, TrackingUsers trackingUsers, TrackingGroups trackingGroups, ErrorCodes errorCodes)
+            : base("/tracking/group", dataStore, trackingUsers, errorCodes)
         {
             _trackingGroups = trackingGroups;
             Get["/{groupid}"] = parameters =>

@@ -15,8 +15,8 @@ namespace Trackifly.Server.Modules
         private static readonly Dictionary<string, DateTime> SessionCache = new Dictionary<string, DateTime>();
         private readonly TrackingSessions _trackingSessions;
 
-        public TrackingModule(IDataStore dataStore, TrackingSessions trackingSessions, ErrorCodes errorCodes)
-            : base("/tracking", dataStore, errorCodes)
+        public TrackingModule(IDataStore dataStore, TrackingUsers trackingUsers, TrackingSessions trackingSessions, ErrorCodes errorCodes)
+            : base("/tracking", dataStore, trackingUsers, errorCodes)
         {
             Before += ctx =>
             {
