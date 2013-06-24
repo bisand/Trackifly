@@ -4,7 +4,6 @@ using MongoDB.Driver;
 using Nancy;
 using Nancy.Authentication.Stateless;
 using Nancy.Conventions;
-using Nancy.Security;
 using Nancy.TinyIoc;
 using Trackifly.Data;
 using Trackifly.Data.Models;
@@ -40,12 +39,15 @@ namespace Trackifly.Server.Bootstrappers
             var statelessAuthConfiguration =
                 new StatelessAuthenticationConfiguration(ctx =>
                     {
-                        if (!ctx.Request.Cookies.ContainsKey("AccessToken") || string.IsNullOrWhiteSpace(ctx.Request.Cookies["AccessToken"]))
+                        if (string.IsNullOrWhiteSpace(ctx.Request.Headers["access-token"].FirstOrDefault()))
                             return null;
 
-                        var accessToken = ctx.Request.Cookies["AccessToken"];
+                        var accessToken = ctx.Request.Headers["access-token"].FirstOrDefault();
                         var dataStore = container.Resolve<IDataStore>();
-                        var trackingUser = dataStore.Query<TrackingUser>().FirstOrDefault(x => x.AccessToken.Token == accessToken && x.AccessToken.Expires > DateTime.Now);
+                        var trackingUser =
+                            dataStore.Query<TrackingUser>()
+                                     .FirstOrDefault(
+                                         x => x.AccessToken.Token == accessToken && x.AccessToken.Expires > DateTime.Now);
 
                         if (trackingUser == null)
                             return null;
