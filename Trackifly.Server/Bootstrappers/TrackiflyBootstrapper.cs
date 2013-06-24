@@ -17,12 +17,7 @@ namespace Trackifly.Server.Bootstrappers
 {
     public class TrackiflyBootstrapper : DefaultNancyBootstrapper
     {
-        private MongoClient _client;
-        private MongoDataStore _dataStore;
-        private MongoDatabase _database;
-        private ErrorCodes _errorCodes;
-        private IRequestValidator _requestRetentionValidator;
-        private MongoServer _server;
+        private static MongoDataStore _dataStore;
 
         protected override void ConfigureConventions(NancyConventions conventions)
         {
@@ -39,11 +34,19 @@ namespace Trackifly.Server.Bootstrappers
             var statelessAuthConfiguration =
                 new StatelessAuthenticationConfiguration(ctx =>
                     {
+                        var cnt = ctx.Items.Values.FirstOrDefault(x=>x is TinyIoCContainer) as TinyIoCContainer;
+                        if (cnt == null)
+                            return null;
+
                         if (string.IsNullOrWhiteSpace(ctx.Request.Headers["access-token"].FirstOrDefault()))
                             return null;
 
                         var accessToken = ctx.Request.Headers["access-token"].FirstOrDefault();
-                        var dataStore = container.Resolve<IDataStore>();
+                        var canResolve = container.CanResolve<IDataStore>();
+                        if (!canResolve)
+                            return null;
+
+                        var dataStore = cnt.Resolve<IDataStore>();
                         var trackingUser =
                             dataStore.Query<TrackingUser>()
                                      .FirstOrDefault(
@@ -59,7 +62,8 @@ namespace Trackifly.Server.Bootstrappers
 
             StatelessAuthentication.Enable(pipelines, statelessAuthConfiguration);
 
-            _requestRetentionValidator = new RequestRetentionValidator();
+            container.Register<RequestRetentionValidator>();
+
             pipelines.BeforeRequest.AddItemToEndOfPipeline(context => RetentionValidator(context, container));
             base.ApplicationStartup(container, pipelines);
         }
@@ -67,25 +71,22 @@ namespace Trackifly.Server.Bootstrappers
         protected override void ConfigureApplicationContainer(Nancy.TinyIoc.TinyIoCContainer container)
         {
             var connectionString = AppSettings.ConnectionString;
-            _client = new MongoClient(connectionString);
-            _server = _client.GetServer();
-            _database = _server.GetDatabase(AppSettings.DatabaseName);
-            _dataStore = new MongoDataStore(_database);
-            _errorCodes = new ErrorCodes();
+            var client = new MongoClient(connectionString);
+            var server = client.GetServer();
+            var database = server.GetDatabase(AppSettings.DatabaseName);
+            _dataStore = new MongoDataStore(database);
 
-            container.Register(typeof (IDataStore), _dataStore);
-            container.Register(typeof (RequestRetentionValidator), _requestRetentionValidator);
+            container.Register<ErrorCodes>().AsSingleton();
 
             base.ConfigureApplicationContainer(container);
         }
 
         protected override void ConfigureRequestContainer(Nancy.TinyIoc.TinyIoCContainer container, NancyContext context)
         {
-            container.Register(typeof (IDataStore), _dataStore);
-            container.Register(typeof (TrackingUsers));
-            container.Register(typeof (TrackingSessions));
-            container.Register(typeof (TrackingGroups));
-            container.Register(typeof (ErrorCodes), _errorCodes);
+            container.Register<IDataStore>(_dataStore);
+            container.Register<TrackingUsers>();
+            container.Register<TrackingSessions>();
+            container.Register<TrackingGroups>();
 
             base.ConfigureRequestContainer(container, context);
         }
