@@ -18,6 +18,13 @@ namespace Trackifly.Server.Bootstrappers
     public class TrackiflyBootstrapper : DefaultNancyBootstrapper
     {
         private static MongoDataStore _dataStore;
+        //private MongoClient _client;
+        //private MongoDataStore _dataStore;
+        //private MongoDatabase _database;
+        //private ErrorCodes _errorCodes;
+        //private IRequestValidator _requestRetentionValidator;
+        //private MongoServer _server;
+        //private TinyIoCContainer _container;
 
         protected override void ConfigureConventions(NancyConventions conventions)
         {
@@ -31,44 +38,13 @@ namespace Trackifly.Server.Bootstrappers
 
         protected override void ApplicationStartup(TinyIoCContainer container, Nancy.Bootstrapper.IPipelines pipelines)
         {
-            var statelessAuthConfiguration =
-                new StatelessAuthenticationConfiguration(ctx =>
-                    {
-                        var cnt = ctx.Items.Values.FirstOrDefault(x=>x is TinyIoCContainer) as TinyIoCContainer;
-                        if (cnt == null)
-                            return null;
-
-                        if (string.IsNullOrWhiteSpace(ctx.Request.Headers["access-token"].FirstOrDefault()))
-                            return null;
-
-                        var accessToken = ctx.Request.Headers["access-token"].FirstOrDefault();
-                        var canResolve = container.CanResolve<IDataStore>();
-                        if (!canResolve)
-                            return null;
-
-                        var dataStore = cnt.Resolve<IDataStore>();
-                        var trackingUser =
-                            dataStore.Query<TrackingUser>()
-                                     .FirstOrDefault(
-                                         x => x.AccessToken.Token == accessToken && x.AccessToken.Expires > DateTime.Now);
-
-                        if (trackingUser == null)
-                            return null;
-
-                        var test = new UserIdentity(trackingUser.Username, trackingUser.Claims);
-
-                        return test;
-                    });
-
-            StatelessAuthentication.Enable(pipelines, statelessAuthConfiguration);
-
             container.Register<RequestRetentionValidator>();
 
             pipelines.BeforeRequest.AddItemToEndOfPipeline(context => RetentionValidator(context, container));
             base.ApplicationStartup(container, pipelines);
         }
 
-        protected override void ConfigureApplicationContainer(Nancy.TinyIoc.TinyIoCContainer container)
+        protected override void ConfigureApplicationContainer(TinyIoCContainer container)
         {
             var connectionString = AppSettings.ConnectionString;
             var client = new MongoClient(connectionString);
@@ -76,12 +52,12 @@ namespace Trackifly.Server.Bootstrappers
             var database = server.GetDatabase(AppSettings.DatabaseName);
             _dataStore = new MongoDataStore(database);
 
-            container.Register<ErrorCodes>().AsSingleton();
+            container.Register<ErrorCodes>();
 
             base.ConfigureApplicationContainer(container);
         }
 
-        protected override void ConfigureRequestContainer(Nancy.TinyIoc.TinyIoCContainer container, NancyContext context)
+        protected override void ConfigureRequestContainer(TinyIoCContainer container, NancyContext context)
         {
             container.Register<IDataStore>(_dataStore);
             container.Register<TrackingUsers>();
@@ -91,9 +67,35 @@ namespace Trackifly.Server.Bootstrappers
             base.ConfigureRequestContainer(container, context);
         }
 
-        protected override void RequestStartup(Nancy.TinyIoc.TinyIoCContainer container,
-                                               Nancy.Bootstrapper.IPipelines pipelines, NancyContext context)
+        protected override void RequestStartup(TinyIoCContainer container, Nancy.Bootstrapper.IPipelines pipelines, NancyContext context)
         {
+            var statelessAuthConfiguration =
+                new StatelessAuthenticationConfiguration(ctx =>
+                {
+                    if (string.IsNullOrWhiteSpace(ctx.Request.Headers["access-token"].FirstOrDefault()))
+                        return null;
+
+                    var accessToken = ctx.Request.Headers["access-token"].FirstOrDefault();
+                    var canResolve = container.CanResolve<IDataStore>();
+                    if (!canResolve)
+                        return null;
+
+                    var dataStore = container.Resolve<IDataStore>();
+                    var trackingUser =
+                        dataStore.Query<TrackingUser>()
+                                 .FirstOrDefault(
+                                     x => x.AccessToken.Token == accessToken && x.AccessToken.Expires > DateTime.Now);
+
+                    if (trackingUser == null)
+                        return null;
+
+                    var test = new UserIdentity(trackingUser.Username, trackingUser.Claims);
+
+                    return test;
+                });
+
+            StatelessAuthentication.Enable(pipelines, statelessAuthConfiguration);
+
             base.RequestStartup(container, pipelines, context);
         }
 

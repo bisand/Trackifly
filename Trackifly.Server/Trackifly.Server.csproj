@@ -72,6 +72,7 @@
     <Compile Include="Models\RootModel.cs" />
     <Compile Include="Modules\BaseModule.cs" />
     <Compile Include="Modules\LoginModule.cs" />
+    <Compile Include="Modules\PositionModule.cs" />
     <Compile Include="Modules\RootModule.cs" />
     <Compile Include="Modules\TrackingGroupModule.cs" />
     <Compile Include="Modules\TrackingModule.cs" />

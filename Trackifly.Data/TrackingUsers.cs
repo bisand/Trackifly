@@ -101,8 +101,10 @@ namespace Trackifly.Data
         /// <param name="user"></param>
         public void Add(TrackingUser user)
         {
-            if(user == null || string.IsNullOrWhiteSpace(user.Email))
-                throw new ArgumentException("The user must contain at least a valid e-mail address");
+            if (user == null || (string.IsNullOrWhiteSpace(user.Username) && string.IsNullOrWhiteSpace(user.Email)))
+                throw new ArgumentException("The user must contain a username or at least a valid e-mail address");
+            if (string.IsNullOrWhiteSpace(user.Username))
+                user.Username = user.Email;
             _dataStore.Save(user);
         }
 

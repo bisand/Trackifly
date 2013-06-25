@@ -41,8 +41,15 @@ namespace Trackifly.Server.Modules
                     var passwordHash = trackingUser.Password;
 
                     var confirmPassword = _passwordManager.ConfirmPassword(password, passwordHash, passwordSalt);
-                    return confirmPassword ? 
-                        ErrorResponse(HttpStatusCode.OK, "Ok") : 
+
+                    if (confirmPassword)
+                    {
+                        trackingUser.AccessToken = new AccessToken(Guid.NewGuid().ToString());
+                        _trackingUsers.Update(trackingUser);
+                    }
+
+                    return confirmPassword ?
+                        Response.AsJson(trackingUser.AccessToken) : 
                         ErrorResponse(HttpStatusCode.Unauthorized, "Wrong username or password!");
                 };
         }

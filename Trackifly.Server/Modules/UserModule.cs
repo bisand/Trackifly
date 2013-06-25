@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Nancy;
@@ -47,7 +46,7 @@ namespace Trackifly.Server.Modules
 
                     _trackingUsers.Add(user);
 
-                    return Response.AsJson(user, HttpStatusCode.Created);
+                    return Response.AsJson(new UserModel(user), HttpStatusCode.Created);
                 };
 
             Delete["/{accessToken}/{id}"] = parameters =>
@@ -55,7 +54,7 @@ namespace Trackifly.Server.Modules
                     string id = parameters.Id;
                     string accessToken = parameters.AccessToken;
 
-                    this.RequiresClaims(new[] { "Admin" });
+                    this.RequiresClaims(new[] {"Admin"});
 
                     var user = _trackingUsers.Get(id);
                     if (user != null && user.AccessToken != null && user.AccessToken.Token != accessToken)
