@@ -18,6 +18,7 @@ namespace Trackifly.Data.Models
 
         public decimal Longditude { get; set; }
         public decimal Latitude { get; set; }
+        public decimal Altitude { get; set; }
         public DateTime PositionTime { get; set; }
     }
 }

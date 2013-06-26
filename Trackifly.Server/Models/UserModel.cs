@@ -10,6 +10,10 @@ namespace Trackifly.Server.Models
             Username = user.Username;
         }
 
+        public UserModel()
+        {
+        }
+
         public string Username { get; set; }
         [ScriptIgnore]
         public string Password { get; set; }

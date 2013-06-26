@@ -43,6 +43,7 @@ namespace Trackifly.Data.Models
         public string DisplayName { get; set; }
         public TrackingType TrackingType { get; set; }
         public string UserId { get; set; }
+        public string GroupId { get; set; }
 
         public void AddPosition(TrackingPosition position)
         {

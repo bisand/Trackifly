@@ -17,6 +17,7 @@ namespace Trackifly.Server.Modules
         public PositionModule(IDataStore dataStore, TrackingUsers trackingUsers, TrackingSessions trackingSessions, ErrorCodes errorCodes)
             : base("/position", dataStore, trackingUsers, errorCodes)
         {
+            _trackingSessions = trackingSessions;
             Before += ctx =>
             {
                 if (Context.CurrentUser == null)
