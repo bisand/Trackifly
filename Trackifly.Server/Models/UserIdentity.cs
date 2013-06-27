@@ -11,6 +11,7 @@ namespace Trackifly.Server.Models
             Claims = claims;
         }
 
+        public string UserId { get; set; }
         public string UserName { get; private set; }
         public IEnumerable<string> Claims { get; private set; }
     }

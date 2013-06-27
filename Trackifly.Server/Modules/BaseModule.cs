@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Nancy;
-using Nancy.TinyIoc;
 using Trackifly.Data;
 using Trackifly.Data.Storage;
 using Trackifly.Server.Configuration;

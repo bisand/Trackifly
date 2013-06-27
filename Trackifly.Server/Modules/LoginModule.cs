@@ -15,10 +15,11 @@ namespace Trackifly.Server.Modules
     public class LoginModule : BaseModule
     {
         private static readonly Dictionary<string, DateTime> SessionCache = new Dictionary<string, DateTime>();
-        private readonly TrackingUsers _trackingUsers;
         private readonly PasswordManager _passwordManager;
+        private readonly TrackingUsers _trackingUsers;
 
-        public LoginModule(IDataStore dataStore, TrackingUsers trackingUsers, ErrorCodes errorCodes, PasswordManager passwordManager)
+        public LoginModule(IDataStore dataStore, TrackingUsers trackingUsers, ErrorCodes errorCodes,
+                           PasswordManager passwordManager)
             : base("/login", dataStore, trackingUsers, errorCodes)
         {
             _trackingUsers = trackingUsers;
@@ -48,9 +49,9 @@ namespace Trackifly.Server.Modules
                         _trackingUsers.Update(trackingUser);
                     }
 
-                    return confirmPassword ?
-                        Response.AsJson(trackingUser.AccessToken) : 
-                        ErrorResponse(HttpStatusCode.Unauthorized, "Wrong username or password!");
+                    return confirmPassword
+                               ? Response.AsJson(trackingUser.AccessToken)
+                               : ErrorResponse(HttpStatusCode.Unauthorized, "Wrong username or password!");
                 };
         }
     }

@@ -7,6 +7,7 @@ using Trackifly.Data.Models;
 using Trackifly.Data.Storage;
 using Trackifly.Server.Configuration;
 using Trackifly.Server.Helpers;
+using Trackifly.Server.Models;
 
 namespace Trackifly.Server.Modules
 {
@@ -19,23 +20,26 @@ namespace Trackifly.Server.Modules
             : base("/tracking", dataStore, trackingUsers, errorCodes)
         {
             Before += ctx =>
-            {
-                if (Context.CurrentUser == null)
-                    return ErrorResponse(HttpStatusCode.Unauthorized, "Invalid access token! Please login to obtain a new access token.");
-
-                return null;
-            };
+                {
+                    var user = Context.CurrentUser as UserIdentity;
+                    return user == null
+                        ? ErrorResponse(HttpStatusCode.Unauthorized, "Invalid access token! Please login to obtain a new access token.")
+                        : null;
+                };
 
             _trackingSessions = trackingSessions;
             Get["/{sessionid}"] = parameters =>
                 {
+                    var user = Context.CurrentUser as UserIdentity;
+
                     string sessionId = parameters.sessionId;
                     if (sessionId == null)
                         return ErrorResponse(HttpStatusCode.NotFound);
-                    
                     var trackingSession = _trackingSessions.Get(sessionId);
                     if (trackingSession == null)
                         return ErrorResponse(HttpStatusCode.NotFound);
+                    if (user == null || trackingSession.UserId != user.UserId)
+                        return ErrorResponse(HttpStatusCode.Unauthorized);
                     if (trackingSession.Expires <= DateTime.Now)
                         return ErrorResponse(HttpStatusCode.Forbidden, "Session has expired!");
 
@@ -43,18 +47,26 @@ namespace Trackifly.Server.Modules
                 };
             Post["/"] = parameters =>
                 {
+                    var user = Context.CurrentUser as UserIdentity;
+                    if (user == null)
+                        return ErrorResponse(HttpStatusCode.Unauthorized);
+
                     Response response;
                     if (!CheckSaveRetention(SessionCache, out response))
                         return response;
 
                     var trackingSession = this.Bind<TrackingSession>();
-
+                    trackingSession.UserId = user.UserId;
                     _trackingSessions.Add(trackingSession);
 
                     return Response.AsJson(trackingSession);
                 };
             Put["/{sessionid}"] = parameters =>
                 {
+                    var user = Context.CurrentUser as UserIdentity;
+                    if (user == null)
+                        return ErrorResponse(HttpStatusCode.Unauthorized);
+
                     Response response;
                     if (!CheckSaveRetention(SessionCache, out response))
                         return response;
@@ -65,6 +77,7 @@ namespace Trackifly.Server.Modules
 
                     var trackingSession = this.Bind<TrackingSession>();
                     trackingSession.Id = sessionId;
+                    trackingSession.UserId = user.UserId;
 
                     _trackingSessions.Update(trackingSession);
 
@@ -72,12 +85,22 @@ namespace Trackifly.Server.Modules
                 };
             Delete["/{sessionid}"] = parameters =>
                 {
+                    var user = Context.CurrentUser as UserIdentity;
+                    if (user == null)
+                        return ErrorResponse(HttpStatusCode.Unauthorized);
+
                     string sessionId = parameters.sessionId;
                     if (sessionId != null)
                     {
+                        var trackingSession = _trackingSessions.Get(sessionId);
+                        if (trackingSession == null)
+                            return ErrorResponse(HttpStatusCode.NotFound);
+                        if (trackingSession.UserId != user.UserId)
+                            return ErrorResponse(HttpStatusCode.Unauthorized);
+
                         _trackingSessions.Delete(sessionId);
                         return ErrorResponse(HttpStatusCode.OK,
-                                             string.Format("Tracking session {0} is removed.", sessionId));
+                                             string.Format("Tracking session '{0}' including all its positions is removed.", sessionId));
                     }
                     return ErrorResponse(HttpStatusCode.BadRequest);
                 };

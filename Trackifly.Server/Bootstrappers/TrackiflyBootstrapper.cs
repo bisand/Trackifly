@@ -38,14 +38,16 @@ namespace Trackifly.Server.Bootstrappers
 
         protected override void ApplicationStartup(TinyIoCContainer container, Nancy.Bootstrapper.IPipelines pipelines)
         {
-            container.Register<RequestRetentionValidator>();
-
-            pipelines.BeforeRequest.AddItemToEndOfPipeline(context => RetentionValidator(context, container));
             base.ApplicationStartup(container, pipelines);
+
+            container.Register<RequestRetentionValidator>();
+            pipelines.BeforeRequest.AddItemToEndOfPipeline(context => RetentionValidator(context, container));
         }
 
         protected override void ConfigureApplicationContainer(TinyIoCContainer container)
         {
+            base.ConfigureApplicationContainer(container);
+
             var connectionString = AppSettings.ConnectionString;
             var client = new MongoClient(connectionString);
             var server = client.GetServer();
@@ -53,22 +55,22 @@ namespace Trackifly.Server.Bootstrappers
             _dataStore = new MongoDataStore(database);
 
             container.Register<ErrorCodes>();
-
-            base.ConfigureApplicationContainer(container);
         }
 
         protected override void ConfigureRequestContainer(TinyIoCContainer container, NancyContext context)
         {
+            base.ConfigureRequestContainer(container, context);
+
             container.Register<IDataStore>(_dataStore);
             container.Register<TrackingUsers>();
             container.Register<TrackingSessions>();
             container.Register<TrackingGroups>();
-
-            base.ConfigureRequestContainer(container, context);
         }
 
         protected override void RequestStartup(TinyIoCContainer container, Nancy.Bootstrapper.IPipelines pipelines, NancyContext context)
         {
+            base.RequestStartup(container, pipelines, context);
+
             var statelessAuthConfiguration =
                 new StatelessAuthenticationConfiguration(ctx =>
                 {
@@ -89,14 +91,13 @@ namespace Trackifly.Server.Bootstrappers
                     if (trackingUser == null)
                         return null;
 
-                    var test = new UserIdentity(trackingUser.Username, trackingUser.Claims);
+                    var identity = new UserIdentity(trackingUser.Username, trackingUser.Claims);
+                    identity.UserId = trackingUser.Id;
 
-                    return test;
+                    return identity;
                 });
 
             StatelessAuthentication.Enable(pipelines, statelessAuthConfiguration);
-
-            base.RequestStartup(container, pipelines, context);
         }
 
         private static Response RetentionValidator(NancyContext context, TinyIoCContainer container)
