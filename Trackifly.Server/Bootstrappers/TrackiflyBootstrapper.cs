@@ -91,7 +91,7 @@ namespace Trackifly.Server.Bootstrappers
                     if (trackingUser == null)
                         return null;
 
-                    var identity = new UserIdentity(trackingUser.Username, trackingUser.Claims);
+                    var identity = new UserIdentity(trackingUser.Username, trackingUser.Claims, trackingUser.AccessToken);
                     identity.UserId = trackingUser.Id;
 
                     return identity;

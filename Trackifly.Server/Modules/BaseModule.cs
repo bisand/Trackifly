@@ -84,7 +84,7 @@ namespace Trackifly.Server.Modules
         protected Response ErrorResponse(HttpStatusCode httpStatusCode, string customErrorMessage = null)
         {
             var statusCode = (int) httpStatusCode;
-            return Response.AsJson(new ErrorModel
+            return Response.AsJson(new BasicResponseModel
                 {
                     Error = statusCode,
                     Description = customErrorMessage ?? ErrorCodes[statusCode]

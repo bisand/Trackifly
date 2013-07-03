@@ -70,7 +70,7 @@ namespace Trackifly.Server.RequestValidators
         private static Response ErrorResponse(HttpStatusCode httpStatusCode, NancyContext nancyContext, string customErrorMessage = null)
         {
             var statusCode = (int) httpStatusCode;
-            var response = new JsonResponse<ErrorModel>(new ErrorModel
+            var response = new JsonResponse<BasicResponseModel>(new BasicResponseModel
                 {
                     Error = statusCode, Description = customErrorMessage ?? ErrorCodes[statusCode]
                 }, new DefaultJsonSerializer());

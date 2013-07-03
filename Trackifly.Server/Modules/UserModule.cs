@@ -34,7 +34,11 @@ namespace Trackifly.Server.Modules
 
                     var existingUser = _trackingUsers.Query().FirstOrDefault(x => x.Username == model.Username);
                     if (existingUser != null)
-                        return ErrorResponse(HttpStatusCode.Conflict, "Username allready exists!");
+                        return ErrorResponse(HttpStatusCode.Conflict, "Username already exists!");
+
+                    existingUser = _trackingUsers.Query().FirstOrDefault(x => x.Email == model.Email);
+                    if (existingUser != null)
+                        return ErrorResponse(HttpStatusCode.Conflict, "E-mail is already registered!");
 
                     var salt = Encoding.UTF8.GetBytes(Guid.NewGuid().ToString());
                     var hashPassword = _passwordManager.HashPassword(model.Password, salt);
@@ -49,20 +53,51 @@ namespace Trackifly.Server.Modules
                     return Response.AsJson(new UserModel(user), HttpStatusCode.Created);
                 };
 
-            Delete["/{accessToken}/{id}"] = parameters =>
+            Get["/availability/{username}"] = parameters =>
+                {
+                    string username = parameters.Username;
+                    var user = _trackingUsers.Query().FirstOrDefault(x => x.Username == username);
+                    var response = user == null
+                                       ? new BasicResponseModel(0, "")
+                                       : new BasicResponseModel(0, "User already exists!");
+
+                    return Response.AsJson(response);
+                };
+
+            Get["/availability/email/{email}"] = parameters =>
+                {
+                    string email = parameters.Email;
+                    var user = _trackingUsers.Query().FirstOrDefault(x => x.Email == email);
+                    var response = user == null
+                                       ? new BasicResponseModel(0, "")
+                                       : new BasicResponseModel(0, "Email is already registered!");
+
+                    return Response.AsJson(response);
+                };
+
+            Delete["/{id}"] = parameters =>
                 {
                     string id = parameters.Id;
-                    string accessToken = parameters.AccessToken;
+                    var currentUser = Context.CurrentUser as UserIdentity;
+                    if (currentUser == null)
+                        return HttpStatusCode.Unauthorized;
+
+                    var accessToken = currentUser.AccessToken;
 
                     this.RequiresClaims(new[] {"Admin"});
 
                     var user = _trackingUsers.Get(id);
-                    if (user != null && user.AccessToken != null && user.AccessToken.Token != accessToken)
-                        return HttpStatusCode.Unauthorized;
+                    if (user != null && user.Claims.All(x => x != "Admin"))
+                    {
+                        if (user.AccessToken != null && user.AccessToken.Token != accessToken.Token)
+                            return HttpStatusCode.Unauthorized;
+                    }
+
                     if (user == null)
                         return HttpStatusCode.NotFound;
 
                     _trackingUsers.Delete(id);
+                    
                     return HttpStatusCode.OK;
                 };
         }
