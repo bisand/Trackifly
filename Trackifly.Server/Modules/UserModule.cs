@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Nancy;
@@ -24,6 +25,73 @@ namespace Trackifly.Server.Modules
         {
             _trackingUsers = trackingUsers;
             _passwordManager = passwordManager;
+
+            Get["/{page?}/{take?}"] = parameters =>
+                {
+                    int page;
+                    int take;
+                    page = int.TryParse(parameters.Page, out page) ? page : 0;
+                    take = int.TryParse(parameters.Take, out take) ? take : 10;
+
+                    var currentUser = Context.CurrentUser as UserIdentity;
+                    if (currentUser == null)
+                        return HttpStatusCode.Unauthorized;
+
+                    this.RequiresClaims(new[] {"Admin"});
+
+                    var users = _trackingUsers.Query().Skip(page*take).Take(take).ToList();
+
+                    return currentUser.Claims.All(x => x != "Admin")
+                               ? HttpStatusCode.Unauthorized
+                               : Response.AsJson(users);
+                };
+
+            Get["/{userId}"] = parameters =>
+                {
+                    var currentUser = Context.CurrentUser as UserIdentity;
+                    if (currentUser == null || currentUser.AccessToken == null ||
+                        string.IsNullOrWhiteSpace(currentUser.AccessToken.Token))
+                        return HttpStatusCode.Unauthorized;
+
+                    string userId = parameters.UserId;
+
+                    var accessToken = currentUser.AccessToken;
+
+                    this.RequiresClaims(new[] {"Admin"});
+
+                    var user = _trackingUsers.Get(userId);
+                    if (currentUser.Claims.All(x => x != "Admin"))
+                    {
+                        if (user.AccessToken == null || user.AccessToken.Token != accessToken.Token)
+                            return HttpStatusCode.Unauthorized;
+                    }
+
+                    return user == null
+                               ? (dynamic) new BasicResponseModel((int) HttpStatusCode.NotFound, "User not found!")
+                               : Response.AsJson(user);
+                };
+
+            Get["/availability/{username}"] = parameters =>
+                {
+                    string username = parameters.Username;
+                    var user = _trackingUsers.Query().FirstOrDefault(x => x.Username == username);
+                    var response = user == null
+                                       ? new BasicResponseModel(0, "")
+                                       : new BasicResponseModel(0, "User already exists!");
+
+                    return Response.AsJson(response);
+                };
+
+            Get["/availability/email/{email}"] = parameters =>
+                {
+                    string email = parameters.Email;
+                    var user = _trackingUsers.Query().FirstOrDefault(x => x.Email == email);
+                    var response = user == null
+                                       ? new BasicResponseModel(0, "")
+                                       : new BasicResponseModel(0, "Email is already registered!");
+
+                    return Response.AsJson(response);
+                };
 
             Post["/"] = _ =>
                 {
@@ -53,28 +121,6 @@ namespace Trackifly.Server.Modules
                     return Response.AsJson(new UserModel(user), HttpStatusCode.Created);
                 };
 
-            Get["/availability/{username}"] = parameters =>
-                {
-                    string username = parameters.Username;
-                    var user = _trackingUsers.Query().FirstOrDefault(x => x.Username == username);
-                    var response = user == null
-                                       ? new BasicResponseModel(0, "")
-                                       : new BasicResponseModel(0, "User already exists!");
-
-                    return Response.AsJson(response);
-                };
-
-            Get["/availability/email/{email}"] = parameters =>
-                {
-                    string email = parameters.Email;
-                    var user = _trackingUsers.Query().FirstOrDefault(x => x.Email == email);
-                    var response = user == null
-                                       ? new BasicResponseModel(0, "")
-                                       : new BasicResponseModel(0, "Email is already registered!");
-
-                    return Response.AsJson(response);
-                };
-
             Delete["/{id}"] = parameters =>
                 {
                     string id = parameters.Id;
@@ -87,9 +133,9 @@ namespace Trackifly.Server.Modules
                     this.RequiresClaims(new[] {"Admin"});
 
                     var user = _trackingUsers.Get(id);
-                    if (user != null && user.Claims.All(x => x != "Admin"))
+                    if (currentUser.Claims.All(x => x != "Admin"))
                     {
-                        if (user.AccessToken != null && user.AccessToken.Token != accessToken.Token)
+                        if (user.AccessToken == null || user.AccessToken.Token != accessToken.Token)
                             return HttpStatusCode.Unauthorized;
                     }
 
@@ -97,7 +143,7 @@ namespace Trackifly.Server.Modules
                         return HttpStatusCode.NotFound;
 
                     _trackingUsers.Delete(id);
-                    
+
                     return HttpStatusCode.OK;
                 };
         }
