@@ -62,7 +62,7 @@ namespace Trackifly.Server.Modules
                     var user = _trackingUsers.Get(userId);
                     if (currentUser.Claims.All(x => x != "Admin"))
                     {
-                        if (user.AccessToken == null || user.AccessToken.Token != accessToken.Token)
+                        if (user == null || user.AccessToken == null || user.AccessToken.Token != accessToken.Token)
                             return HttpStatusCode.Unauthorized;
                     }
 

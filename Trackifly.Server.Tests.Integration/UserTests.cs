@@ -47,5 +47,28 @@ namespace Trackifly.Server.Tests.Integration
 
             Assert.That(response.StatusCode == HttpStatusCode.OK);
         }
+
+        public void User_should_be_retrieved_with_the_supplied_UserId()
+        {
+            var browser = new Browser(with =>
+            {
+                with.Module<UserModule>();
+                with.Dependencies(_dependencies);
+            });
+
+            var model = new UserModel
+            {
+                Username = "test123",
+                Password = "test123",
+                Name = "Test Testesen",
+                Email = "test@test.net"
+            };
+
+            var response = browser.Get("/user/", with =>
+            {
+                with.HttpRequest();
+            });
+
+        }
     }
 }
